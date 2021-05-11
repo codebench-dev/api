@@ -5,6 +5,8 @@ The CodeBench main API.
 ## Requirements
 
 -   NodeJS v14+
+-   RabbitMQ see the `docker-compose.yml`
+-   Copy `.env.example` to `.env` and fill it as needed.
 
 ## Setup
 
