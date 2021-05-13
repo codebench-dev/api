@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int         @id @default(autoincrement())
+  username      String      @unique @db.VarChar(255)
+  email         String      @unique @db.VarChar(255)
+  password      String      @db.VarChar(65)
+  profilepicurl String?
+  benchmarks    Benchmark[]
+  comments      Comment[]
+  sessions      Session[]
+}
+
+model Benchmark {
+  id         Int       @id @default(autoincrement())
+  title      String
+  subject    String
+  giturl     String?
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  difficulty String?
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  comments    Comment[]
+  try        Try[]
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  comment     String
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  benchmarkId Int
+  userId      Int
+  benchmark   Benchmark @relation(fields: [benchmarkId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Language {
+  id             Int    @id @default(autoincrement())
+  name           String @db.VarChar(255)
+  implementation String @db.VarChar(255)
+  version        String @db.VarChar(255)
+  try            Try[]
+}
+
+model Session {
+  id        Int       @id @default(autoincrement())
+  token     String
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Try {
+  id          Int       @id @default(autoincrement())
+  code        String?
+  stdoutput   String?
+  erroutput   String?
+  status      String    @db.VarChar(255)
+  rate        Int?
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  benchmarkId Int
+  languageId  Int
+  benchmark   Benchmark @relation(fields: [benchmarkId], references: [id])
+  language    Language  @relation(fields: [languageId], references: [id])
+}

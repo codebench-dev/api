@@ -9,3 +9,14 @@ services:
     ports:
         - 5672:5672
         - 15672:15672
+  postgres:
+    image: postgres:13.2-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+      POSTGRES_DB: codebench
+    volumes:
+      - ./volume/postgres:/data/postgres
+    ports:
+      - 5432:5432
