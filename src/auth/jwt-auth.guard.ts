@@ -13,6 +13,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   // Get username from JWT payload and inject full user from repository
   // req.user of type User will be accessible anywhere the guard is called
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   handleRequest(err: any, user: AuthenticatedUserDTO): any {
     if (err || !user) {
       throw err || new UnauthorizedException();

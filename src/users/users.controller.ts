@@ -1,7 +1,6 @@
 import { Body, ConflictException, Controller, Post } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { Prisma, User as UserModel } from '@prisma/client';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { User as UserModel, Prisma } from '@prisma/client';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -11,14 +10,14 @@ export class UsersController {
   @Post()
   async signupUser(
     @Body()
-    userData: CreateUserDTO
+    userData: CreateUserDTO,
   ): Promise<UserModel> {
     try {
       const res = await this.userServices.create({
-          name: userData.name,
-          username: userData.username,
-          email: userData.email,
-          password: userData.password,
+        name: userData.name,
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
       });
       return res;
     } catch (e) {
@@ -28,7 +27,7 @@ export class UsersController {
       ) {
         throw new ConflictException(`Email ${userData.email} already used.`);
       } else {
-        throw new Error(e.code);
+        throw new Error(e);
       }
     }
   }

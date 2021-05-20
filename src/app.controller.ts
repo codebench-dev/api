@@ -1,21 +1,10 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Post,
-  Body,
-  Put,
-  Delete,
-  Query,
-  ConflictException,
-  UseGuards,
-} from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-import { User as UserModel, Prisma } from '@prisma/client';
-import { LocalAuthGuard } from './auth/local-auth.guard';
-import { AuthUserDTO } from './auth/dto/auth-user.dto';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { User as UserModel } from '@prisma/client';
 import { AuthService } from './auth/auth.service';
+import { AuthUserDTO } from './auth/dto/auth-user.dto';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { LocalAuthGuard } from './auth/local-auth.guard';
+import { PrismaService } from './prisma.service';
 
 @Controller()
 export class AppController {
