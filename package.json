@@ -33,6 +33,7 @@
     "@nestjs/swagger": "^4.8.0",
     "@prisma/client": "2.23.0",
     "argon2": "^0.27.2",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "install": "^0.13.0",
     "passport": "^0.4.1",
