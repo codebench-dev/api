@@ -12,9 +12,6 @@ const option = {
 };
 
 module.exports = function (app: express.Application) {
-    app.get('/api', async (req, res) => {
-        res.status(200).json({ message: 'Welcome to CodeBench-API' });
-    });
 
     app.post('/api/try', bodyParser.json(), async (req, res) => {
         const job = req.body;

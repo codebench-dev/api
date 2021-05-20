@@ -27,7 +27,7 @@ model Benchmark {
   difficulty String?
   userId     Int
   user       User      @relation(fields: [userId], references: [id])
-  comments    Comment[]
+  comments   Comment[]
   try        Try[]
 }
 
