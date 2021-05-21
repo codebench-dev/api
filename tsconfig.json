@@ -1,11 +1,15 @@
 {
-    "compilerOptions": {
-        "sourceMap": true,
-        "outDir": "dist",
-        "strict": true,
-        "lib": [
-            "esnext"
-        ],
-        "esModuleInterop": true
-    }
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "strictPropertyInitialization": false
+  }
 }
