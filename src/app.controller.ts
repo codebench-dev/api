@@ -1,27 +1,32 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { User as UserModel } from '@prisma/client';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { AuthService } from './auth/auth.service';
 import { AuthUserDTO } from './auth/dto/auth-user.dto';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { LoggedInTokenResponse } from './auth/dto/logged-in-token-response.dto';
+import { UnauthorizedResponse } from './auth/dto/unothorized-response.dto';
 import { LocalAuthGuard } from './auth/local-auth.guard';
-import { PrismaService } from './prisma.service';
+import { User } from './users/user.entity';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Get('users')
-  async getAllUsers(): Promise<UserModel[]> {
-    return this.prismaService.user.findMany();
-  }
-
+  @ApiOperation({ summary: 'Authenticate and get token' })
+  @ApiCreatedResponse({
+    type: LoggedInTokenResponse,
+    description: 'JWT token',
+  })
+  @ApiUnauthorizedResponse({
+    type: UnauthorizedResponse,
+    description: 'Invalid username or password',
+  })
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   login(@Body() authUserDTO: AuthUserDTO): { access_token: string } {
-    return this.authService.login(authUserDTO);
+    return this.authService.login(new User(authUserDTO));
   }
 }
