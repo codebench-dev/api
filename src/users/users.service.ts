@@ -30,7 +30,7 @@ export class UsersService {
     });
   }
 
-  async findOne(user: FindUserDTO): Promise<UserModel | undefined> {
+  async findOne(user: FindUserDTO): Promise<UserModel | null> {
     return this.prismaService.user.findUnique({
       where: { username: user.username },
     });
