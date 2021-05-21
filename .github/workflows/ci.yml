@@ -12,7 +12,6 @@ jobs:
         with:
           node-version: 16.x
       - run: npm install
-      - run: npx prisma generate
       - run: npm run lint:check
       - run: npm run format:check
   build:
@@ -24,5 +23,4 @@ jobs:
         with:
           node-version: 16.x
       - run: npm install
-      - run: npx prisma generate
       - run: npm run build
