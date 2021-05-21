@@ -1,7 +1,8 @@
+import * as dotenv from 'dotenv';
 import { parse } from 'pg-connection-string';
 import { ConnectionOptions } from 'typeorm';
 
-require('dotenv').config();
+dotenv.config();
 
 const config = parse(
   process.env.DATABASE_URL || 'postgres://:@localhost:5432/',
