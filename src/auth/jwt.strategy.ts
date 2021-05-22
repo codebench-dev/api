@@ -1,19 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import * as passportJwt from 'passport-jwt';
-import { jwtConstants } from './constants';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthenticatedUserDTO } from './dto/authenticated-user.dto';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(passportJwt.Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: {
+        secret: process.env.JWT_SECRET || 'secret',
+      },
     });
   }
 

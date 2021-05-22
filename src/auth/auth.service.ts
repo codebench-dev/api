@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User as UserModel } from '@prisma/client';
 import * as argon2 from 'argon2';
+import { User } from 'src/users/user.entity';
 import { UsersService } from '../users/users.service';
-import { AuthUserDTO } from './dto/auth-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +14,7 @@ export class AuthService {
   async validateUser(
     username: string,
     pass: string,
-  ): Promise<UserModel | undefined> {
+  ): Promise<User | undefined> {
     const user = await this.usersService.findOne({ username });
     if (user && (await this.passwordsAreEqual(user.password, pass))) {
       return user;
@@ -23,7 +22,7 @@ export class AuthService {
     return undefined;
   }
 
-  login(user: AuthUserDTO): { access_token: string } {
+  login(user: User): { access_token: string } {
     const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),

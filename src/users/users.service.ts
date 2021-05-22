@@ -1,38 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { User as UserModel } from '@prisma/client';
-import * as argon2 from 'argon2';
-import { PrismaService } from 'src/prisma.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { FindUserDTO } from './dto/find-user.dto';
+import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-  async create(userData: CreateUserDTO): Promise<UserModel> {
-    const password = await argon2.hash(userData.password);
-
-    return this.prismaService.user.create({
-      data: {
-        name: userData.name,
-        username: userData.username,
-        email: userData.email,
-        password,
-      },
-      select: {
-        id: true,
-        name: true,
-        username: true,
-        email: true,
-        password: true,
-        profilepicurl: true,
-      },
-    });
+  async isEmailTaken(email: string): Promise<boolean> {
+    const existingUser = await this.usersRepository.findOne({ email });
+    if (existingUser) {
+      return true;
+    }
+    return false;
   }
 
-  async findOne(user: FindUserDTO): Promise<UserModel | null> {
-    return this.prismaService.user.findUnique({
-      where: { username: user.username },
-    });
+  async isUsernameTaken(username: string): Promise<boolean> {
+    const existingUser = await this.usersRepository.findOne({ username });
+    if (existingUser) {
+      return true;
+    }
+    return false;
+  }
+
+  async create(userData: CreateUserDTO): Promise<User> {
+    const user = new User(userData);
+    return user.save();
+    // return this.usersRepository.save(userData);
+  }
+
+  async findOne(user: FindUserDTO): Promise<User | undefined> {
+    return this.usersRepository.findOne({ username: user.username });
   }
 }
