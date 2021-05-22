@@ -7,6 +7,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { RedisModule } from 'nestjs-redis';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { BenchmarkModule } from './benchmarks/benchmark.module';
 import { HealthController } from './health/health.controller';
 import ormconfig from './ormconfig';
 import redisconfig from './redisconfig';
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(ormconfig),
+    BenchmarkModule,
     AuthModule,
     UsersModule,
     SubmissionsModule,

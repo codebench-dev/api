@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { Benchmark } from 'src/benchmarks/benchmark.entity';
 import { Submission } from 'src/submissions/submission.entity';
 import {
   BaseEntity,
@@ -60,6 +61,9 @@ export class User extends BaseEntity {
 
   @OneToMany((type) => Submission, (submission) => submission.user)
   submissions: Submission[];
+
+  @OneToMany((type) => Benchmark, (benchmark) => benchmark.creator)
+  benchmarks: Benchmark[];
 
   @BeforeInsert()
   @BeforeUpdate()
