@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { Submission } from 'src/submissions/submission.entity';
 import {
   BaseEntity,
   BeforeInsert,
@@ -8,6 +9,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -55,6 +57,9 @@ export class User extends BaseEntity {
   @Exclude()
   @VersionColumn()
   dataVersion: number;
+
+  @OneToMany((type) => Submission, (submission) => submission.user)
+  submissions: Submission[];
 
   @BeforeInsert()
   @BeforeUpdate()
