@@ -32,6 +32,7 @@
     "db:reset": "npm run db:drop && npm run db:migrate"
   },
   "dependencies": {
+    "@nestjs/bull": "^0.3.1",
     "@nestjs/common": "7.6.17",
     "@nestjs/config": "^0.6.3",
     "@nestjs/core": "7.6.17",
@@ -41,10 +42,12 @@
     "@nestjs/swagger": "^4.8.0",
     "@nestjs/typeorm": "^7.1.5",
     "argon2": "^0.27.2",
+    "bull": "^3.22.6",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^9.0.2",
     "install": "^0.13.0",
+    "nestjs-redis": "^1.3.3",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -59,6 +62,7 @@
     "@nestjs/schematics": "7.3.1",
     "@nestjs/testing": "7.6.17",
     "@tsconfig/node16": "^1.0.1",
+    "@types/bull": "^3.15.1",
     "@types/express": "4.17.11",
     "@types/jest": "26.0.23",
     "@types/node": "15.3.1",
