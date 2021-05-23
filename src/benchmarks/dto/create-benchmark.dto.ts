@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateBenchmarkDto {
   @IsNotEmpty()
@@ -12,10 +12,11 @@ export class CreateBenchmarkDto {
   @ApiProperty()
   subject: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
-  giturl: string;
+  @ApiPropertyOptional()
+  giturl?: string;
 
   @IsNotEmpty()
   @IsString()

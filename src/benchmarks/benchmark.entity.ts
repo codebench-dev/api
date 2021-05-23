@@ -23,8 +23,8 @@ export class Benchmark extends BaseEntity {
   subject: string;
 
   @ApiProperty()
-  @Column()
-  giturl: string;
+  @Column('text', { nullable: true })
+  gitUrl?: string;
 
   @ApiProperty()
   @CreateDateColumn()

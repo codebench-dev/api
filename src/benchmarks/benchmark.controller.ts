@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { CreateBenchmarkDto } from 'src/benchmarks/dto/create-benchmark.dto';
 import { BenchmarkService } from 'src/benchmarks/benchmark.service';
 import { Benchmark } from './benchmark.entity';
@@ -18,8 +18,13 @@ export class BenchmarkController {
     @Body()
       benchmark: CreateBenchmarkDto
   ) : Promise<Benchmark>{
-    console.log(benchmark);
     return this.benchmarkService.create(benchmark, req.user);
   }
+
+  @Get()
+  async getEveryBenchMarks() : Promise<Benchmark[]> {
+    return this.benchmarkService.getAll();
+  }
+
 
 }
