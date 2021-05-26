@@ -1,5 +1,22 @@
-import { Body, ConflictException, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { FindUserDTO } from './dto/find-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -21,5 +38,25 @@ export class UsersController {
     }
 
     return this.usersService.create(user);
+  }
+
+  @ApiOperation({ summary: 'Get a user' })
+  @ApiParam({ name: 'username', type: FindUserDTO })
+  @ApiOkResponse({ type: User, description: 'User object' })
+  // @ApiBadRequestResponse({
+  //   type: BadRequestResponse,
+  //   description: 'Invalid input',
+  // })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get(':username')
+  async findOne(@Param() userReq: { username: string }): Promise<User> {
+    const user: User | undefined = await this.usersService.findOne(userReq);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 }
