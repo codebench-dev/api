@@ -23,4 +23,8 @@ export class BenchmarkService {
   async getAll() : Promise<Benchmark[]> {
     return this.benchmarkRepository.find({});
   }
+
+  async findOne(id: { id: string }): Promise<Benchmark | undefined> {
+    return this.benchmarkRepository.findOne(id);
+  }
 }
