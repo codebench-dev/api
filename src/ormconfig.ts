@@ -15,6 +15,7 @@ const ormConfig: ConnectionOptions = {
   username: config.user || '',
   password: config.password || '',
   database: config.database || 'codebench',
+  ssl: config.ssl === 'true' || false,
   synchronize: false,
   dropSchema: false,
   migrationsRun: process.env.NODE_ENV === 'production', // run on heroku
