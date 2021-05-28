@@ -18,13 +18,13 @@ import { UsersModule } from './users/users.module';
     SubmissionsModule,
     BullModule.forRoot({
       redis: {
-        host: 'localhost',
-        port: 6378,
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT) || 6379,
       },
     }),
     RedisModule.register({
-      host: 'localhost',
-      port: 6378,
+      host: process.env.REDIS_HOST || 'localhost',
+      port: Number(process.env.REDIS_PORT) || 6379,
     }),
   ],
   controllers: [AppController],
