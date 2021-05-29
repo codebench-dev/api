@@ -10,17 +10,18 @@ export class BenchmarkService {
   constructor(
     @InjectRepository(Benchmark)
     private benchmarkRepository: Repository<Benchmark>,
-  ) {
+  ) {}
 
-  }
-
-  async create(benchmarkData: CreateBenchmarkDto, user: User): Promise<Benchmark> {
+  async create(
+    benchmarkData: CreateBenchmarkDto,
+    user: User,
+  ): Promise<Benchmark> {
     const benchmark = new Benchmark(benchmarkData);
     benchmark.creator = user;
     return benchmark.save();
   }
 
-  async getAll() : Promise<Benchmark[]> {
+  async getAll(): Promise<Benchmark[]> {
     return this.benchmarkRepository.find({});
   }
 

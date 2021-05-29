@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/user.entity';
 
@@ -34,8 +41,7 @@ export class Benchmark extends BaseEntity {
   @Column()
   difficulty: string;
 
-  @ManyToOne((type) => User, (user) => user.benchmarks, {eager: true})
-  @ApiProperty({type: () => User})
+  @ManyToOne((type) => User, (user) => user.benchmarks, { eager: true })
+  @ApiProperty({ type: () => User })
   creator: User;
-
 }
