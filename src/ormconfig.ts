@@ -18,6 +18,7 @@ const ormConfig: ConnectionOptions = {
   ssl: process.env.DB_CERT
     ? {
         ca: process.env.DB_CERT,
+        rejectUnauthorized: false,
       }
     : false,
   synchronize: false,
