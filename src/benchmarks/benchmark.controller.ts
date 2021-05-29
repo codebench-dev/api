@@ -4,7 +4,7 @@ import { BenchmarkService } from 'src/benchmarks/benchmark.service';
 import { Benchmark } from './benchmark.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ValidatedJWTReq } from '../auth/dto/validated-jwt-req';
-import { ApiBadRequestResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { BenchmarkIdDto } from './dto/benchmarkId.dto';
 
 
@@ -37,9 +37,7 @@ export class BenchmarkController {
   @ApiOkResponse({type: Benchmark, description: 'Requested benchmark'})
   @Get(':id')
   async getBenchmarkById(@Param() id: BenchmarkIdDto): Promise<Benchmark | undefined> {
-    const benchmark =  await this.benchmarkService.findOne(id);
-
-    return benchmark;
+    return this.benchmarkService.findOne(id);
   }
 
 
