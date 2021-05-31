@@ -6,6 +6,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -14,6 +15,23 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
   app.enableCors();
+
+  const options = new DocumentBuilder()
+    .setTitle('CodeBench API')
+    .setDescription('The CodeBench API description')
+    .setVersion('0.1')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+      name: 'Authorization',
+      description:
+        'JWT authentication. Format is `Authorization: bearer <token>`',
+    })
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('doc', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
