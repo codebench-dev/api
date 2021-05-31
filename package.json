@@ -44,7 +44,7 @@
     "@nestjs/terminus": "^7.2.0",
     "@nestjs/typeorm": "^7.1.5",
     "argon2": "^0.27.2",
-    "bull": "^3.22.6",
+    "bull": "^3.22.7",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
