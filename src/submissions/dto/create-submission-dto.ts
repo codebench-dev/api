@@ -11,4 +11,9 @@ export class CreateSubmissionDTO {
   @IsString()
   @ApiProperty()
   code: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  benchmarkId: string;
 }

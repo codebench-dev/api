@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/user.entity';
+import { Submission } from '../submissions/submission.entity';
 
 @Entity('benchmarks')
 export class Benchmark extends BaseEntity {
@@ -40,6 +42,9 @@ export class Benchmark extends BaseEntity {
   @ApiProperty()
   @Column()
   difficulty: string;
+
+  @OneToMany((type) => Submission, (submission) => submission.benchmark)
+  submissions: Submission[];
 
   @ManyToOne((type) => User, (user) => user.benchmarks, { eager: true })
   @ApiProperty({ type: () => User })
