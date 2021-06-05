@@ -1,9 +1,17 @@
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  CACHE_MANAGER,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
+import { isUUID } from 'class-validator';
 import { TypedJSON } from 'typedjson';
 import { Repository } from 'typeorm';
+import { BenchmarkService } from '../benchmarks/benchmark.service';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
@@ -15,11 +23,29 @@ export class SubmissionsService {
     @InjectRepository(Submission)
     private submissionsRepository: Repository<Submission>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(forwardRef(() => BenchmarkService))
+    private benchmarkService: BenchmarkService,
   ) {}
 
   async create(insertSubmissionDTO: InsertSubmissionDTO): Promise<Submission> {
     const submission = new Submission(insertSubmissionDTO);
     submission.status = 'waiting';
+
+    if (!isUUID(insertSubmissionDTO.benchmarkId)) {
+      throw new BadRequestException(
+        `Invalid benchmark id: ${insertSubmissionDTO.benchmarkId}`,
+      );
+    }
+    const benchmark = await this.benchmarkService.findOne({
+      id: insertSubmissionDTO.benchmarkId,
+    });
+
+    if (!benchmark) {
+      throw new BadRequestException(
+        `Could not find benchmark: ${insertSubmissionDTO.benchmarkId}`,
+      );
+    }
+    submission.benchmark = benchmark;
 
     return submission.save();
   }

@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Benchmark } from '../benchmarks/benchmark.entity';
 
 @jsonObject
 @Entity('submissions')
@@ -64,4 +65,11 @@ export class Submission extends BaseEntity {
   @ApiProperty({ type: () => User })
   @jsonMember(() => User)
   user: User;
+
+  @ManyToOne(() => Benchmark, (benchmark) => benchmark.submissions, {
+    nullable: false,
+    eager: true,
+  })
+  @ApiProperty({ type: () => Benchmark })
+  benchmark: Benchmark;
 }
