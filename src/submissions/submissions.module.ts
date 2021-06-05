@@ -2,6 +2,9 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { CacheModule, forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CodeQualityModule } from 'src/code-quality/code-quality.module';
+import { LintModule } from 'src/lint/lint.module';
+import { LintService } from 'src/lint/lint.service';
 import { UsersModule } from 'src/users/users.module';
 import { BenchmarkModule } from '../benchmarks/benchmark.module';
 import { Submission } from './submission.entity';
@@ -29,8 +32,10 @@ import { SubmissionsService } from './submissions.service';
       }),
     }),
     forwardRef(() => BenchmarkModule),
+    CodeQualityModule,
+    LintModule,
   ],
-  providers: [SubmissionsService],
+  providers: [SubmissionsService, LintService],
   controllers: [SubmissionsController],
   exports: [SubmissionsService],
 })
