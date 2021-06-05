@@ -38,3 +38,8 @@ lerna-debug.log*
 
 # Docker volues
 volumes/
+
+# antlr4
+**/*.tokens
+**/*.interp
+.antlr

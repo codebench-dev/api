@@ -7,12 +7,15 @@ import {
   Param,
   Post,
   Request,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { ValidatedJWTReq } from 'src/auth/dto/validated-jwt-req';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CodeQualityService } from 'src/code-quality/code-quality.service';
+import { LintService } from 'src/lint/lint.service';
 import { CreateSubmissionDTO } from './dto/create-submission-dto';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
+import { SubmissionResultDTO } from './dto/submission-result.dto';
 import { Submission } from './submission.entity';
 import { SubmissionsService } from './submissions.service';
 
@@ -21,6 +24,8 @@ export class SubmissionsController {
   constructor(
     private readonly submissionsService: SubmissionsService,
     private readonly amqpConnection: AmqpConnection,
+    private qualityService: CodeQualityService,
+    private lintService: LintService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -28,7 +33,7 @@ export class SubmissionsController {
   async create(
     @Request() req: ValidatedJWTReq,
     @Body() createSubmissionDTO: CreateSubmissionDTO,
-  ): Promise<Submission> {
+  ): Promise<SubmissionResultDTO> {
     const submission = await this.submissionsService.create({
       ...createSubmissionDTO,
       user: req.user,
@@ -41,7 +46,17 @@ export class SubmissionsController {
       language: createSubmissionDTO.language,
     });
 
-    return submission;
+    return {
+      submission,
+      lint:
+        createSubmissionDTO.language === 'cpython3' // TODO: handle more languages
+          ? this.lintService.lintPython3(createSubmissionDTO.code)
+          : {},
+      quality:
+        createSubmissionDTO.language === 'cpp' // TODO: handle more languages
+          ? this.qualityService.run(createSubmissionDTO.code)
+          : { score: 100 },
+    };
   }
 
   @UseGuards(JwtAuthGuard)

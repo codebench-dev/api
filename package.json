@@ -30,7 +30,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
     "db:migrate": "npm run typeorm migration:run",
     "db:drop": "npm run typeorm schema:drop",
-    "db:reset": "npm run db:drop && npm run db:migrate"
+    "db:reset": "npm run db:drop && npm run db:migrate",
+    "antlr4ts": "antlr4ts"
   },
   "dependencies": {
     "@golevelup/nestjs-rabbitmq": "^1.17.1",
@@ -51,7 +52,10 @@
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
     "fastify-swagger": "^4.8.3",
+    "antlr4ts": "^0.5.0-alpha.4",
+    "fp-ts": "^2.10.5",
     "install": "^0.13.0",
+    "io-ts": "^2.2.16",
     "nestjs-pino": "^1.4.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -78,6 +82,7 @@
     "@typescript-eslint/eslint-plugin": "4.28.2",
     "@typescript-eslint/parser": "4.28.2",
     "eslint": "^7.30.0",
+    "antlr4ts-cli": "^0.5.0-alpha.4",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "^2.23.4",
