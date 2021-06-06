@@ -42,8 +42,8 @@ export class BenchmarkController {
   @ApiOkResponse({ type: Benchmark, description: 'Requested benchmark' })
   @Get(':id')
   async getBenchmarkById(
-    @Param() id: BenchmarkIdDto,
+    @Param() benchmarkIdDto: BenchmarkIdDto,
   ): Promise<Benchmark | undefined> {
-    return this.benchmarkService.findOne(id);
+    return this.benchmarkService.findOne(benchmarkIdDto.id);
   }
 }
