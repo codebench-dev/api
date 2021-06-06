@@ -8,10 +8,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
-import { isUUID } from 'class-validator';
 import { TypedJSON } from 'typedjson';
 import { Repository } from 'typeorm';
 import { BenchmarkService } from '../benchmarks/benchmark.service';
+import { User } from '../users/user.entity';
+import { FindLastSubmissionByLanguageDTO } from './dto/find-last-submission-by-language.dto';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
@@ -31,21 +32,13 @@ export class SubmissionsService {
     const submission = new Submission(insertSubmissionDTO);
     submission.status = 'waiting';
 
-    if (!isUUID(insertSubmissionDTO.benchmarkId)) {
-      throw new BadRequestException(
-        `Invalid benchmark id: ${insertSubmissionDTO.benchmarkId}`,
-      );
-    }
-    const benchmark = await this.benchmarkService.findOne({
-      id: insertSubmissionDTO.benchmarkId,
-    });
+    const benchmark = await this.benchmarkService.findOne(
+      insertSubmissionDTO.benchmarkId,
+    );
 
-    if (!benchmark) {
-      throw new BadRequestException(
-        `Could not find benchmark: ${insertSubmissionDTO.benchmarkId}`,
-      );
+    if (benchmark) {
+      submission.benchmark = benchmark;
     }
-    submission.benchmark = benchmark;
 
     return submission.save();
   }
@@ -122,6 +115,38 @@ export class SubmissionsService {
           { ttl: 600 },
         );
       }
+    }
+  }
+
+  async findLastByLanguage(
+    filter: FindLastSubmissionByLanguageDTO,
+    requestUser: User,
+  ): Promise<Submission | undefined> {
+    const bench = await this.benchmarkService.findOne(filter.benchmarkId);
+    const matchedLanguage = await this.languageMatcher(filter.language);
+
+    if (!matchedLanguage) {
+      throw new BadRequestException(`Invalid language: ${filter.language}`);
+    }
+
+    return this.submissionsRepository.findOne({
+      where: [
+        {
+          user: requestUser,
+          benchmark: bench,
+          language: matchedLanguage,
+        },
+      ],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async languageMatcher(language: string): Promise<string | undefined> {
+    switch (language) {
+      case 'python':
+        return 'cpython3';
+      default:
+        return undefined;
     }
   }
 }
