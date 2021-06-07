@@ -21,7 +21,26 @@ Prod:
 npm start
 ```
 
-## Manage database with TypeORM
+## Architecture
+
+### Submission jobs
+
+| Component | Action                                                                                                              |
+| --------- | ------------------------------------------------------------------------------------------------------------------- |
+| `Worker`  | Launch and maintain pool of X prebooted microVMs in the background                                                  |
+| `Worker`  | Bind to RabbitMQ queue `jobs_q` on `jobs_ex` exchange and `jobs_rk` routing key                                     |
+| `API`     | Bind to RabbitMQ queue `jobs_status_q` on `jobs_status_ex` exchange and `jobs_status_rk` routing key                |
+| `Front`   | `POST /submissions`                                                                                                 |
+| `Front`   | poll `GET /submissions/:id` every 500 ms                                                                            |
+| `API`     | Send job to RabbitMQ on `jobs_ex` direct exchange with `jobs_rk` routing key.                                       |
+| `Worker`  | Receive job, get ready microVM from pool, send job to agent in microVM                                              |
+| `Agent`   | Compile/Run code, return result                                                                                     |
+| `Worker`  | During two previous steips, send status of jobs on `jobs_status_ex` exchange with `jobs_status_rk` routing key      |
+| `API`     | Receive each new status on `jobs_status_q`, and insert them into DB, so that the polling can get the latest status. |
+
+## Contribute
+
+### Manage database with TypeORM
 
 Delete schema:
 
@@ -52,11 +71,11 @@ Create migration:
 npm run typeorm migration:generate -- -n AddNewEntity
 ```
 
-## Style
+### Code Style
 
 Available commands for eslint/prettier:
 
-```
+```sh
 npm run lint:check
 npm run lint:fix
 npm run format:check

@@ -1,4 +1,4 @@
-import { InjectQueue } from '@nestjs/bull';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   Body,
   Controller,
@@ -9,7 +9,6 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { Queue } from 'bull';
 import { ValidatedJWTReq } from 'src/auth/dto/validated-jwt-req';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateSubmissionDTO } from './dto/create-submission-dto';
@@ -21,7 +20,7 @@ import { SubmissionsService } from './submissions.service';
 export class SubmissionsController {
   constructor(
     private readonly submissionsService: SubmissionsService,
-    @InjectQueue('submissions') private readonly jobQ: Queue,
+    private readonly amqpConnection: AmqpConnection,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -34,10 +33,12 @@ export class SubmissionsController {
       ...createSubmissionDTO,
       user: req.user,
     });
-    await this.jobQ.add({
-      realID: submission.id,
+
+    // Send job to worker
+    await this.amqpConnection.publish('jobs_ex', 'jobs_rk', {
+      id: submission.id,
       code: createSubmissionDTO.code,
-      language: createSubmissionDTO.language,
+      variant: createSubmissionDTO.language,
     });
 
     return submission;
@@ -46,7 +47,6 @@ export class SubmissionsController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(
-    @Request() req: ValidatedJWTReq,
     @Param() findSubmissionDTO: FindSubmissionDTO,
   ): Promise<Submission> {
     const submission: Submission | undefined =
