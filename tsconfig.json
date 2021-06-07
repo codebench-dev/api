@@ -18,5 +18,8 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": false,
     "allowJs": true,
-  }
+  },
+  "include": [
+    "src/**/*"
+  ],
 }
