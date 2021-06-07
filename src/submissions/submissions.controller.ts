@@ -6,14 +6,12 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { ValidatedJWTReq } from 'src/auth/dto/validated-jwt-req';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateSubmissionDTO } from './dto/create-submission-dto';
-import { FindLastSubmissionByLanguageDTO } from './dto/find-last-submission-by-language.dto';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { Submission } from './submission.entity';
 import { SubmissionsService } from './submissions.service';
@@ -42,25 +40,6 @@ export class SubmissionsController {
       code: createSubmissionDTO.code,
       variant: createSubmissionDTO.language,
     });
-
-    return submission;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Put()
-  async findLastForUserByLanguage(
-    @Request() req: ValidatedJWTReq,
-    @Body() findLastSubmissionByLanguageDTO: FindLastSubmissionByLanguageDTO,
-  ): Promise<Submission> {
-    const submission: Submission | undefined =
-      await this.submissionsService.findLastByLanguage(
-        findLastSubmissionByLanguageDTO,
-        req.user,
-      );
-
-    if (!submission) {
-      throw new NotFoundException();
-    }
 
     return submission;
   }
