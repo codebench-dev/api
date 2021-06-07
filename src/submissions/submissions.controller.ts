@@ -13,10 +13,10 @@ import {
 import { ValidatedJWTReq } from 'src/auth/dto/validated-jwt-req';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateSubmissionDTO } from './dto/create-submission-dto';
+import { FindLastSubmissionByLanguageDTO } from './dto/find-last-submission-by-language.dto';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { Submission } from './submission.entity';
 import { SubmissionsService } from './submissions.service';
-import { FindLastSubmissionByLanguageDTO } from './dto/find-last-submission-by-language.dto';
 
 @Controller('submissions')
 export class SubmissionsController {
@@ -52,8 +52,6 @@ export class SubmissionsController {
     @Request() req: ValidatedJWTReq,
     @Body() findLastSubmissionByLanguageDTO: FindLastSubmissionByLanguageDTO,
   ): Promise<Submission> {
-    console.log(findLastSubmissionByLanguageDTO.language);
-    console.log(findLastSubmissionByLanguageDTO.benchmarkId);
     const submission: Submission | undefined =
       await this.submissionsService.findLastByLanguage(
         findLastSubmissionByLanguageDTO,
@@ -61,7 +59,7 @@ export class SubmissionsController {
       );
 
     if (!submission) {
-      throw NotFoundException;
+      throw new NotFoundException();
     }
 
     return submission;
@@ -76,7 +74,7 @@ export class SubmissionsController {
     const submission = await this.submissionsService.findOne(findSubmissionDTO);
 
     if (!submission) {
-      throw NotFoundException;
+      throw new NotFoundException();
     }
 
     return submission;
