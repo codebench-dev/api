@@ -23,7 +23,7 @@ npm start
 
 ## Architecture
 
-### Submission jobs
+### Submission jobs execution flow
 
 | Component | Action                                                                                                                                  |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ npm start
 | `API`     | Send job to RabbitMQ on `jobs_ex` direct exchange with `jobs_rk` routing key.                                                           |
 | `Worker`  | Receive job, get ready microVM from pool, send job to agent in microVM                                                                  |
 | `Agent`   | Compile/Run code, return result                                                                                                         |
-| `Worker`  | During two previous steips, send status of jobs on `jobs_status_ex` exchange with `jobs_status_rk` routing key                          |
+| `Worker`  | During two previous steps, send status of jobs on `jobs_status_ex` exchange with `jobs_status_rk` routing key                           |
 | `API`     | Receive each new status on `jobs_status_q`, and insert them into DB and in-memory cache, so that the polling can get the latest status. |
 
 ## Contribute
