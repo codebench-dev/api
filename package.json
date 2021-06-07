@@ -59,7 +59,7 @@
     "passport-local": "^1.0.0",
     "pg": "^8.6.0",
     "pg-connection-string": "^2.5.0",
-    "pino-pretty": "^5.0.1",
+    "pino-pretty": "^5.0.2",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "typedjson": "^1.7.0",
