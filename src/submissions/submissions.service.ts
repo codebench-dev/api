@@ -27,15 +27,19 @@ export class SubmissionsService {
   async setStatus(
     id: string,
     status: string,
-    output?: string,
+    stdout?: string,
+    stderr?: string,
   ): Promise<Submission | undefined> {
     const submission = await this.submissionsRepository.findOne({
       id,
     });
     if (submission) {
       submission.status = status;
-      if (output) {
-        submission.output = output;
+      if (stdout) {
+        submission.stdout = stdout;
+      }
+      if (stderr) {
+        submission.stderr = stderr;
       }
       await submission.save();
       return submission;
