@@ -1,5 +1,5 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
-import { forwardRef, Module } from '@nestjs/common';
+import { CacheModule, forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { Submission } from './submission.entity';
@@ -10,6 +10,7 @@ import { SubmissionsService } from './submissions.service';
   imports: [
     TypeOrmModule.forFeature([Submission]),
     forwardRef(() => UsersModule),
+    CacheModule.register(),
     RabbitMQModule.forRoot(RabbitMQModule, {
       exchanges: [
         {
