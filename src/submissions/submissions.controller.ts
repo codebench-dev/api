@@ -49,8 +49,8 @@ export class SubmissionsController {
   async findOne(
     @Param() findSubmissionDTO: FindSubmissionDTO,
   ): Promise<Submission> {
-    const submission: Submission | undefined =
-      await this.submissionsService.findOne(findSubmissionDTO);
+    // Since this endpoint is used for polling, the service will fetch from cache first and fallback to DB
+    const submission = await this.submissionsService.findOne(findSubmissionDTO);
 
     if (!submission) {
       throw NotFoundException;

@@ -1,6 +1,7 @@
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cache } from 'cache-manager';
 import { TypedJSON } from 'typedjson';
 import { Repository } from 'typeorm';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
@@ -13,6 +14,7 @@ export class SubmissionsService {
   constructor(
     @InjectRepository(Submission)
     private submissionsRepository: Repository<Submission>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async create(insertSubmissionDTO: InsertSubmissionDTO): Promise<Submission> {
@@ -22,7 +24,11 @@ export class SubmissionsService {
     return submission.save();
   }
 
-  async setStatus(id: string, status: string, output?: string): Promise<void> {
+  async setStatus(
+    id: string,
+    status: string,
+    output?: string,
+  ): Promise<Submission | undefined> {
     const submission = await this.submissionsRepository.findOne({
       id,
     });
@@ -32,13 +38,28 @@ export class SubmissionsService {
         submission.output = output;
       }
       await submission.save();
+      return submission;
     }
+    return undefined;
   }
 
   async findOne(
-    submission: FindSubmissionDTO,
+    queriedSubmission: FindSubmissionDTO,
   ): Promise<Submission | undefined> {
-    return this.submissionsRepository.findOne({ id: submission.id });
+    // First, try to get from cache
+    const cachedSubmission = await this.cacheManager.get(queriedSubmission.id);
+
+    if (cachedSubmission !== '') {
+      const serializer = new TypedJSON(Submission);
+
+      const submission = serializer.parse(cachedSubmission);
+      if (submission) {
+        return submission;
+      }
+    }
+
+    // Fallback to DB
+    return this.submissionsRepository.findOne({ id: queriedSubmission.id });
   }
 
   @RabbitSubscribe({
@@ -50,11 +71,27 @@ export class SubmissionsService {
     // TODO: use logger instead
     console.log(`Received job status: ${JSON.stringify(msg)}`);
 
-    const serializer = new TypedJSON(JobStatusDTO);
+    const jobSerializer = new TypedJSON(JobStatusDTO);
+    const jobStatus = jobSerializer.parse(msg);
 
-    const jobStatus = serializer.parse(msg);
     if (jobStatus) {
-      await this.setStatus(jobStatus.id, jobStatus.status, jobStatus.stdout);
+      // Set in DB
+      const submission = await this.setStatus(
+        jobStatus.id,
+        jobStatus.status,
+        jobStatus.stdout,
+      );
+
+      if (submission) {
+        const submissionSerializer = new TypedJSON(Submission);
+
+        // Set in cache to speed up polling
+        await this.cacheManager.set(
+          jobStatus.id,
+          submissionSerializer.stringify(submission),
+          { ttl: 600 },
+        );
+      }
     }
   }
 }
