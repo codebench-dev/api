@@ -25,5 +25,6 @@ import { SubmissionsService } from './submissions.service';
   ],
   providers: [SubmissionsService],
   controllers: [SubmissionsController],
+  exports: [SubmissionsService],
 })
 export class SubmissionsModule {}
