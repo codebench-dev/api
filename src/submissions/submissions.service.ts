@@ -48,6 +48,7 @@ export class SubmissionsService {
     status: string,
     stdout?: string,
     stderr?: string,
+    execDuration?: number,
   ): Promise<Submission | undefined> {
     const submission = await this.submissionsRepository.findOne({
       id,
@@ -59,6 +60,9 @@ export class SubmissionsService {
       }
       if (stderr) {
         submission.stderr = stderr;
+      }
+      if (execDuration) {
+        submission.execDuration = execDuration;
       }
       await submission.save();
       return submission;
@@ -103,6 +107,8 @@ export class SubmissionsService {
         jobStatus.id,
         jobStatus.status,
         jobStatus.stdout,
+        jobStatus.stderr,
+        jobStatus.exec_duration,
       );
 
       if (submission) {
