@@ -69,6 +69,11 @@ export class CPPQualityVisitor
     return true;
   }
 
+  private isCamelCase(text: string): boolean {
+    const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
+    return camelCaseRegex.test(text);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   protected defaultResult(): void {}
 }
