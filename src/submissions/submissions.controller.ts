@@ -7,7 +7,7 @@ import {
   Param,
   Post,
   Request,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { ValidatedJWTReq } from 'src/auth/dto/validated-jwt-req';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
