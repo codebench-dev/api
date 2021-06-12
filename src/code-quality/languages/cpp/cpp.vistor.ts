@@ -1,6 +1,7 @@
 import { CharStreams, CommonTokenStream } from 'antlr4ts';
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { QualityDTO } from 'src/code-quality/dto/quality.dto';
+import { isUppercase } from 'class-validator';
 import { CPP14Lexer } from './generated/CPP14Lexer';
 import {
   CPP14Parser,
@@ -32,10 +33,40 @@ export class CPPQualityVisitor
 
   visitFunctionDefinition(context: FunctionDefinitionContext): void {
     const funcName = context.declarator().text;
+    const funcBody = context.functionBody().text;
 
-    if (funcName.length > 20) {
+    this.functionNameQualityRule(funcName);
+    this.functionBodyQualityRule(funcBody);
+  }
+
+  private functionNameQualityRule(functionName: string): void {
+    // If function name is not written is snake case => quality -3
+    if (!this.isSnakeCase(functionName)) {
+      this.codeQuality.score -= 3;
+    }
+
+    // If function name name is greater than 25 character => quality -1
+    if (functionName.length > 25) {
       this.codeQuality.score -= 1;
     }
+  }
+
+  private functionBodyQualityRule(functionBody: string): void {
+    const lines = functionBody.split(';');
+
+    // If there is more than 30 lines => quality -5
+    if (lines.length > 30) {
+      this.codeQuality.score -= 5;
+    }
+  }
+
+  private isSnakeCase(text: string): boolean {
+    for (let i = 0; i < text.length; i += 1) {
+      if (isUppercase(text[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
