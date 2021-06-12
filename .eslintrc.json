@@ -19,6 +19,7 @@
     "node": true,
     "jest": true
   },
+  "ignorePatterns": ["**/generated/CPP14*.ts"],
   "rules": {
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
