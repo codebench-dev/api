@@ -13,4 +13,7 @@ export class JobStatusDTO {
 
   @jsonMember
   stderr: string;
+
+  @jsonMember
+  exec_duration: number;
 }
