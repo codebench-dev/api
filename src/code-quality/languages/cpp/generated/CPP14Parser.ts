@@ -1596,6 +1596,7 @@ export class CPP14Parser extends Parser {
       this._ctx,
       _parentState,
     );
+    // @ts-ignore
     let _prevctx: NestedNameSpecifierContext = _localctx;
     const _startState = 10;
     this.enterRecursionRule(
@@ -2218,6 +2219,7 @@ export class CPP14Parser extends Parser {
       this._ctx,
       _parentState,
     );
+    // @ts-ignore
     let _prevctx: PostfixExpressionContext = _localctx;
     const _startState = 30;
     this.enterRecursionRule(
@@ -3352,6 +3354,7 @@ export class CPP14Parser extends Parser {
     const _parentState: number = this.state;
     let _localctx: NoPointerNewDeclaratorContext =
       new NoPointerNewDeclaratorContext(this._ctx, _parentState);
+    // @ts-ignore
     let _prevctx: NoPointerNewDeclaratorContext = _localctx;
     const _startState = 50;
     this.enterRecursionRule(
@@ -9629,6 +9632,7 @@ export class CPP14Parser extends Parser {
       this._ctx,
       _parentState,
     );
+    // @ts-ignore
     let _prevctx: NoPointerDeclaratorContext = _localctx;
     const _startState = 230;
     this.enterRecursionRule(
@@ -10465,6 +10469,7 @@ export class CPP14Parser extends Parser {
     const _parentState: number = this.state;
     let _localctx: NoPointerAbstractDeclaratorContext =
       new NoPointerAbstractDeclaratorContext(this._ctx, _parentState);
+    // @ts-ignore
     let _prevctx: NoPointerAbstractDeclaratorContext = _localctx;
     const _startState = 252;
     this.enterRecursionRule(
@@ -10816,6 +10821,7 @@ export class CPP14Parser extends Parser {
     const _parentState: number = this.state;
     let _localctx: NoPointerAbstractPackDeclaratorContext =
       new NoPointerAbstractPackDeclaratorContext(this._ctx, _parentState);
+    // @ts-ignore
     let _prevctx: NoPointerAbstractPackDeclaratorContext = _localctx;
     const _startState = 256;
     this.enterRecursionRule(
@@ -15182,6 +15188,7 @@ export class CPP14Parser extends Parser {
     return true;
   }
 
+  // @ts-ignore
   private static readonly _serializedATNSegments: number = 4;
 
   private static readonly _serializedATNSegment0: string =

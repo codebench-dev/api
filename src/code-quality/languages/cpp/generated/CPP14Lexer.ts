@@ -6,8 +6,11 @@ import { ATNDeserializer } from "antlr4ts/atn/ATNDeserializer";
 import { CharStream } from "antlr4ts/CharStream";
 import { Lexer } from "antlr4ts/Lexer";
 import { LexerATNSimulator } from "antlr4ts/atn/LexerATNSimulator";
+// @ts-ignore
 import { NotNull } from "antlr4ts/Decorators";
+// @ts-ignore
 import { Override } from "antlr4ts/Decorators";
+// @ts-ignore
 import { RuleContext } from "antlr4ts/RuleContext";
 import { Vocabulary } from "antlr4ts/Vocabulary";
 import { VocabularyImpl } from "antlr4ts/VocabularyImpl";
@@ -281,6 +284,7 @@ export class CPP14Lexer extends Lexer {
 	// @Override
 	public get modeNames(): string[] { return CPP14Lexer.modeNames; }
 
+	// @ts-ignore
 	private static readonly _serializedATNSegments: number = 3;
 	private static readonly _serializedATNSegment0: string =
 		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x02\x93\u05B6\b\x01" +
