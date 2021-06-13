@@ -61,14 +61,17 @@ export class CPPQualityVisitor
   }
 
   private isSnakeCase(text: string): boolean {
-    for (let i = 0; i < text.length; i += 1) {
-      if (isUppercase(text[i])) {
+    // Function name without ()
+    const functionName = text.substring(0, text.length - 2);
+    for (let i = 0; i < functionName.length; i += 1) {
+      if (isUppercase(functionName[i]) && functionName[i] !== '_') {
         return false;
       }
     }
     return true;
   }
 
+  // @ts-ignore
   private isCamelCase(text: string): boolean {
     const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
     return camelCaseRegex.test(text);
