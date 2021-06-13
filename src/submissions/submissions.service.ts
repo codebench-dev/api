@@ -102,7 +102,7 @@ export class SubmissionsService {
   })
   public async handleJobStatus(msg: string): Promise<void> {
     // TODO: use logger instead
-    console.log(`Received job status: ${JSON.stringify(msg)}`);
+    // console.log(`Received job status: ${JSON.stringify(msg)}`);
 
     const jobSerializer = new TypedJSON(JobStatusDTO);
     const jobStatus = jobSerializer.parse(msg);
