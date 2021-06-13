@@ -71,6 +71,7 @@ export class CPPQualityVisitor
     return true;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   private isCamelCase(text: string): boolean {
     const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
