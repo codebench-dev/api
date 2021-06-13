@@ -58,6 +58,11 @@ export class CPPQualityVisitor
     if (lines.length > 30) {
       this.codeQuality.score -= 5;
     }
+
+    // If there more than 80 characters in the line => quality -1
+    this.codeQuality.score -= lines.filter((line) =>
+      this.isLineTooLong(line),
+    ).length;
   }
 
   private isSnakeCase(text: string): boolean {
@@ -76,6 +81,10 @@ export class CPPQualityVisitor
   private isCamelCase(text: string): boolean {
     const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
     return camelCaseRegex.test(text);
+  }
+
+  private isLineTooLong(line: string): boolean {
+    return line.length > 80;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
