@@ -12,7 +12,7 @@ import {
 import { ValidatedJWTReq } from 'src/auth/dto/validated-jwt-req';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CodeQualityService } from 'src/code-quality/code-quality.service';
-import { LintService } from 'src/lint/lint.service';
+// import { LintService } from 'src/lint/lint.service';
 import { CreateSubmissionDTO } from './dto/create-submission-dto';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { SubmissionResultDTO } from './dto/submission-result.dto';
@@ -24,8 +24,7 @@ export class SubmissionsController {
   constructor(
     private readonly submissionsService: SubmissionsService,
     private readonly amqpConnection: AmqpConnection,
-    private qualityService: CodeQualityService,
-    private lintService: LintService,
+    private qualityService: CodeQualityService, // private lintService: LintService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -46,16 +45,25 @@ export class SubmissionsController {
       language: createSubmissionDTO.language,
     });
 
+    let lintScore = { score: 100 };
+    let qualityScore = { score: 100 };
+    switch (createSubmissionDTO.language) {
+      case 'cpython3':
+        qualityScore = this.qualityService.run(createSubmissionDTO.code, 'py');
+        // lintScore = this.lintService.lintPython3(createSubmissionDTO.code);
+        break;
+      case 'cpp':
+        qualityScore = this.qualityService.run(createSubmissionDTO.code, 'cpp');
+        break;
+      default:
+        lintScore = { score: 0 };
+        qualityScore = { score: 0 };
+    }
+
     return {
       submission,
-      lint:
-        createSubmissionDTO.language === 'cpython3' // TODO: handle more languages
-          ? this.lintService.lintPython3(createSubmissionDTO.code)
-          : {},
-      quality:
-        createSubmissionDTO.language === 'cpp' // TODO: handle more languages
-          ? this.qualityService.run(createSubmissionDTO.code)
-          : { score: 100 },
+      lint: lintScore,
+      quality: qualityScore,
     };
   }
 
