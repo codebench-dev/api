@@ -19,14 +19,18 @@ export class PythonVisitor {
           if (line.startsWith('def')) {
             const funcNameRaw = line.substring(3);
             const funcName = funcNameRaw.split('(')[0];
-            console.log(funcName);
             // If function name is not written is snake case => quality -3
             if (!CommonQualityFunction.isSnakeCase(funcName)) {
               this.codeQuality.score -= 3;
             }
+            // If function name name is greater than 25 character => quality -1
             if (funcName.length > 25) {
               this.codeQuality.score -= 1;
             }
+          }
+          // If there more than 80 characters in the line => quality -1
+          if (line.length > 80) {
+            this.codeQuality.score -= 1;
           }
         });
       },
