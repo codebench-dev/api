@@ -24,6 +24,9 @@ export class PythonVisitor {
             if (!CommonQualityFunction.isSnakeCase(funcName)) {
               this.codeQuality.score -= 3;
             }
+            if (funcName.length > 25) {
+              this.codeQuality.score -= 1;
+            }
           }
         });
       },
