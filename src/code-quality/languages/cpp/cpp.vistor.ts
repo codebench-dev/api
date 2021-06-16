@@ -1,13 +1,13 @@
 import { CharStreams, CommonTokenStream } from 'antlr4ts';
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { QualityDTO } from 'src/code-quality/dto/quality.dto';
-import { isUppercase } from 'class-validator';
 import { CPP14Lexer } from './generated/CPP14Lexer';
 import {
   CPP14Parser,
   FunctionDefinitionContext,
 } from './generated/CPP14Parser';
 import { CPP14ParserVisitor } from './generated/CPP14ParserVisitor';
+import { CommonQualityFunction } from '../common/CommonQualityFunction';
 
 export class CPPQualityVisitor
   extends AbstractParseTreeVisitor<void>
@@ -41,7 +41,8 @@ export class CPPQualityVisitor
 
   private functionNameQualityRule(functionName: string): void {
     // If function name is not written is snake case => quality -3
-    if (!this.isSnakeCase(functionName)) {
+    const functionNameClean = functionName.split('(')[0];
+    if (!CommonQualityFunction.isSnakeCase(functionNameClean)) {
       this.codeQuality.score -= 3;
     }
 
@@ -61,30 +62,8 @@ export class CPPQualityVisitor
 
     // If there more than 80 characters in the line => quality -1
     this.codeQuality.score -= lines.filter((line) =>
-      this.isLineTooLong(line),
+      CommonQualityFunction.isLineTooLong(line),
     ).length;
-  }
-
-  private isSnakeCase(text: string): boolean {
-    // Function name without ()
-    const functionName = text.substring(0, text.length - 2);
-    for (let i = 0; i < functionName.length; i += 1) {
-      if (isUppercase(functionName[i]) && functionName[i] !== '_') {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  private isCamelCase(text: string): boolean {
-    const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
-    return camelCaseRegex.test(text);
-  }
-
-  private isLineTooLong(line: string): boolean {
-    return line.length > 80;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
