@@ -45,7 +45,7 @@
     "@nestjs/typeorm": "^7.1.5",
     "amqp-connection-manager": "^3.2.2",
     "amqplib": "^0.8.0",
-    "argon2": "^0.28.1",
+    "argon2": "^0.28.2",
     "cache-manager": "^3.4.4",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
