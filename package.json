@@ -68,7 +68,7 @@
   "devDependencies": {
     "@nestjs/cli": "7.6.0",
     "@nestjs/schematics": "7.3.1",
-    "@nestjs/testing": "7.6.17",
+    "@nestjs/testing": "7.6.18",
     "@tsconfig/node16": "^1.0.1",
     "@types/cache-manager": "^3.4.0",
     "@types/jest": "26.0.23",
