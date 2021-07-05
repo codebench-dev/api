@@ -23,7 +23,3 @@ services:
       - codebench_db:/data
     ports:
       - 5432:5432
-  redis:
-    image: 'redis:6.2.3'
-    ports:
-      - '127.0.0.1:6378:6379'

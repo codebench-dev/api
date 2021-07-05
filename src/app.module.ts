@@ -3,13 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule } from 'nestjs-pino';
-import { RedisModule } from 'nestjs-redis';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { BenchmarkModule } from './benchmarks/benchmark.module';
 import { HealthController } from './health/health.controller';
 import ormconfig from './ormconfig';
-import redisconfig from './redisconfig';
 import { SubmissionsModule } from './submissions/submissions.module';
 import { UsersModule } from './users/users.module';
 
@@ -21,7 +19,6 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule,
     SubmissionsModule,
-    RedisModule.register(redisconfig),
     TerminusModule,
     LoggerModule.forRoot({
       pinoHttp: {
