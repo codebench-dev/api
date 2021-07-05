@@ -1,13 +1,11 @@
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {
   BadRequestException,
-  CACHE_MANAGER,
   forwardRef,
   Inject,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cache } from 'cache-manager';
 import { TypedJSON } from 'typedjson';
 import { Repository } from 'typeorm';
 import { BenchmarkService } from '../benchmarks/benchmark.service';
@@ -23,7 +21,7 @@ export class SubmissionsService {
   constructor(
     @InjectRepository(Submission)
     private submissionsRepository: Repository<Submission>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Inject(forwardRef(() => BenchmarkService))
     private benchmarkService: BenchmarkService,
   ) {}
@@ -74,16 +72,16 @@ export class SubmissionsService {
     queriedSubmission: FindSubmissionDTO,
   ): Promise<Submission | undefined> {
     // First, try to get from cache
-    const cachedSubmission = await this.cacheManager.get(queriedSubmission.id);
+    // const cachedSubmission = await this.cacheManager.get(queriedSubmission.id);
 
-    if (cachedSubmission !== '') {
-      const serializer = new TypedJSON(Submission);
+    // if (cachedSubmission !== '') {
+    //   const serializer = new TypedJSON(Submission);
 
-      const submission = serializer.parse(cachedSubmission);
-      if (submission) {
-        return submission;
-      }
-    }
+    //   const submission = serializer.parse(cachedSubmission);
+    //   if (submission) {
+    //     return submission;
+    //   }
+    // }
 
     // Fallback to DB
     return this.submissionsRepository.findOne({ id: queriedSubmission.id });
@@ -103,7 +101,7 @@ export class SubmissionsService {
 
     if (jobStatus) {
       // Set in DB
-      const submission = await this.setStatus(
+      await this.setStatus(
         jobStatus.id,
         jobStatus.status,
         jobStatus.stdout,
@@ -111,16 +109,16 @@ export class SubmissionsService {
         jobStatus.exec_duration,
       );
 
-      if (submission) {
-        const submissionSerializer = new TypedJSON(Submission);
+      // if (submission) {
+      //   const submissionSerializer = new TypedJSON(Submission);
 
-        // Set in cache to speed up polling
-        await this.cacheManager.set(
-          jobStatus.id,
-          submissionSerializer.stringify(submission),
-          { ttl: 600 },
-        );
-      }
+      //   // Set in cache to speed up polling
+      //   await this.cacheManager.set(
+      //     jobStatus.id,
+      //     submissionSerializer.stringify(submission),
+      //     { ttl: 600 },
+      //   );
+      // }
     }
   }
 
