@@ -25,6 +25,8 @@ npm start
 
 ### Submission jobs execution flow
 
+![](./doc/assets/submission.svg)
+
 | Component | Action                                                                                                                                  |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `Worker`  | Launch and maintain pool of X prebooted microVMs in the background                                                                      |
