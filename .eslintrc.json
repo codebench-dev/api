@@ -19,7 +19,7 @@
     "node": true,
     "jest": true
   },
-  "ignorePatterns": ["**/generated/CPP14*.ts"],
+  "ignorePatterns": ["**/generated/CPP14*.ts", "**/generated/Go*.ts"],
   "rules": {
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
@@ -30,4 +30,5 @@
     "no-await-in-loop": "off",
     "class-methods-use-this": "off"
   }
+
 }

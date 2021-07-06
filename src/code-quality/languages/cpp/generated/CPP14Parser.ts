@@ -11,7 +11,6 @@ import { RecognitionException } from 'antlr4ts/RecognitionException';
 import { RuleContext } from 'antlr4ts/RuleContext';
 import { Token } from 'antlr4ts/Token';
 import { TokenStream } from 'antlr4ts/TokenStream';
-// import { RuleVersion } from "antlr4ts/RuleVersion";
 import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
 import { Vocabulary } from 'antlr4ts/Vocabulary';
 import { VocabularyImpl } from 'antlr4ts/VocabularyImpl';
