@@ -27,7 +27,7 @@ export class GoQualityVistor
     return this.codeQuality;
   }
 
-  visitFunctionDecl(context: FunctionDeclContext) {
+  visitFunctionDecl(context: FunctionDeclContext): void {
     context.IDENTIFIER();
   }
 
