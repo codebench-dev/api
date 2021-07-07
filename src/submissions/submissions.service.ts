@@ -44,6 +44,8 @@ export class SubmissionsService {
   async setStatus(
     id: string,
     status: string,
+    message: string,
+    error: string,
     stdout?: string,
     stderr?: string,
     execDuration?: number,
@@ -58,6 +60,12 @@ export class SubmissionsService {
       }
       if (stderr) {
         submission.stderr = stderr;
+      }
+      if (message) {
+        submission.message = message;
+      }
+      if (error) {
+        submission.error = error;
       }
       if (execDuration) {
         submission.execDuration = execDuration;
@@ -104,6 +112,8 @@ export class SubmissionsService {
       await this.setStatus(
         jobStatus.id,
         jobStatus.status,
+        jobStatus.message,
+        jobStatus.error,
         jobStatus.stdout,
         jobStatus.stderr,
         jobStatus.exec_duration,

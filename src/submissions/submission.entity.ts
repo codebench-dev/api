@@ -53,6 +53,16 @@ export class Submission extends BaseEntity {
 
   @jsonMember
   @ApiProperty()
+  @Column({ nullable: true })
+  message: string;
+
+  @jsonMember
+  @ApiProperty()
+  @Column({ nullable: true })
+  error: string;
+
+  @jsonMember
+  @ApiProperty()
   @Column({ default: 0 })
   execDuration: number;
 

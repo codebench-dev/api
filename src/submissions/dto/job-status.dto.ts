@@ -9,6 +9,12 @@ export class JobStatusDTO {
   status: string;
 
   @jsonMember
+  message: string;
+
+  @jsonMember
+  error: string;
+
+  @jsonMember
   stdout: string;
 
   @jsonMember

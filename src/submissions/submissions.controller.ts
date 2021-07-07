@@ -38,7 +38,7 @@ export class SubmissionsController {
     await this.amqpConnection.publish('jobs_ex', 'jobs_rk', {
       id: submission.id,
       code: createSubmissionDTO.code,
-      variant: createSubmissionDTO.language,
+      language: createSubmissionDTO.language,
     });
 
     return submission;
