@@ -14,12 +14,6 @@ import { VocabularyImpl } from 'antlr4ts/VocabularyImpl';
 import * as Utils from 'antlr4ts/misc/Utils';
 import { GoParserVisitor } from './GoParserVisitor';
 import { Parser } from 'antlr4ts/Parser';
-// import { NotNull } from 'antlr4ts/Decorators';
-// import { Override } from 'antlr4ts/Decorators';
-// import { Parser } from 'antlr4ts/Parser';
-// import { ParseTreeListener } from 'antlr4ts/tree/ParseTreeListener';
-// import { ParseTreeVisitor } from 'antlr4ts/tree/ParseTreeVisitor';
-// import { RuleVersion } from "antlr4ts/RuleVersion";
 
 export class GoParser extends Parser {
   public static readonly BREAK = 1;

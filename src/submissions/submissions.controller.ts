@@ -55,6 +55,9 @@ export class SubmissionsController {
       case 'cpp':
         qualityScore = this.qualityService.run(createSubmissionDTO.code, 'cpp');
         break;
+      case 'go':
+        qualityScore = this.qualityService.run(createSubmissionDTO.code, 'go');
+        break;
       default:
         lintScore = { score: 0 };
         qualityScore = { score: 0 };
