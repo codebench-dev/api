@@ -158,7 +158,11 @@ export class SubmissionsService {
   async languageMatcher(language: string): Promise<string | undefined> {
     switch (language) {
       case 'python':
-        return 'cpython3';
+        return 'python';
+      case 'go':
+        return 'go';
+      case 'cpp':
+        return 'cpp';
       default:
         return undefined;
     }
