@@ -33,22 +33,10 @@ export class SubmissionsController {
     @Request() req: ValidatedJWTReq,
     @Body() createSubmissionDTO: CreateSubmissionDTO,
   ): Promise<SubmissionResultDTO> {
-    const submission = await this.submissionsService.create({
-      ...createSubmissionDTO,
-      user: req.user,
-    });
-
-    // Send job to worker
-    await this.amqpConnection.publish('jobs_ex', 'jobs_rk', {
-      id: submission.id,
-      code: createSubmissionDTO.code,
-      language: createSubmissionDTO.language,
-    });
-
     let lintScore = { score: 100 };
     let qualityScore = { score: 100 };
     switch (createSubmissionDTO.language) {
-      case 'cpython3':
+      case 'python':
         qualityScore = this.qualityService.run(createSubmissionDTO.code, 'py');
         // lintScore = this.lintService.lintPython3(createSubmissionDTO.code);
         break;
@@ -62,6 +50,22 @@ export class SubmissionsController {
         lintScore = { score: 0 };
         qualityScore = { score: 0 };
     }
+
+    const submission = await this.submissionsService.create(
+      {
+        ...createSubmissionDTO,
+        user: req.user,
+      },
+      lintScore.score,
+      qualityScore.score,
+    );
+
+    // Send job to worker
+    await this.amqpConnection.publish('jobs_ex', 'jobs_rk', {
+      id: submission.id,
+      code: createSubmissionDTO.code,
+      language: createSubmissionDTO.language,
+    });
 
     return {
       submission,

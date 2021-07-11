@@ -26,9 +26,15 @@ export class SubmissionsService {
     private benchmarkService: BenchmarkService,
   ) {}
 
-  async create(insertSubmissionDTO: InsertSubmissionDTO): Promise<Submission> {
+  async create(
+    insertSubmissionDTO: InsertSubmissionDTO,
+    lintScore: number,
+    qualityScore: number,
+  ): Promise<Submission> {
     const submission = new Submission(insertSubmissionDTO);
     submission.status = 'waiting';
+    submission.lintScore = lintScore;
+    submission.qualityScore = qualityScore;
 
     const benchmark = await this.benchmarkService.findOne(
       insertSubmissionDTO.benchmarkId,
