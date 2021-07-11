@@ -76,6 +76,14 @@ export class Submission extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @jsonMember
+  @Column({ nullable: true })
+  lintScore: number;
+
+  @jsonMember
+  @Column({ nullable: true })
+  qualityScore: number;
+
   @ManyToOne(() => User, (user) => user.submissions, {
     nullable: false,
     eager: true,
