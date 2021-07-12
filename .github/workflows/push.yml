@@ -47,6 +47,15 @@ jobs:
       - name: Lint Commit
         uses: wagoid/commitlint-github-action@v3
 
+  automerge:
+    name: Dependabot Auto Merge
+    needs: [build, lint, docker, commitlint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v2.1.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   release:
     name: Publish new release
     needs: [build, lint, docker, commitlint]
