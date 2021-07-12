@@ -50,7 +50,7 @@
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
-    "fastify-swagger": "^4.8.2",
+    "fastify-swagger": "^4.8.3",
     "install": "^0.13.0",
     "nestjs-pino": "^1.4.0",
     "passport": "^0.4.1",
