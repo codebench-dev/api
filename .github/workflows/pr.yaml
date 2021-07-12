@@ -1,14 +1,17 @@
 name: Dependabot Auto Merge
 
 on:
-  pull_request:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
-  auto-merge:
+  test:
+    name: Auto-merge minor and patch updates
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: ahmadnassri/action-dependabot-auto-merge@v2
+      - uses: koj-co/dependabot-pr-action@v1.1.12
         with:
-          target: minor
-          github-token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          merge-minor: true
+          merge-patch: true
