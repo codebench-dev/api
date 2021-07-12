@@ -70,7 +70,7 @@
     "@nestjs/testing": "7.6.18",
     "@tsconfig/node16": "^1.0.1",
     "@types/cache-manager": "^3.4.0",
-    "@types/jest": "26.0.23",
+    "@types/jest": "26.0.24",
     "@types/node": "16.3.1",
     "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.34",
