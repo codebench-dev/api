@@ -33,7 +33,7 @@
     "db:reset": "npm run db:drop && npm run db:migrate"
   },
   "dependencies": {
-    "@golevelup/nestjs-rabbitmq": "^1.17.0",
+    "@golevelup/nestjs-rabbitmq": "^1.17.1",
     "@nestjs/common": "7.6.18",
     "@nestjs/config": "^1.0.0",
     "@nestjs/core": "7.6.18",
