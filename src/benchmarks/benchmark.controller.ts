@@ -56,6 +56,15 @@ export class BenchmarkController {
     return this.benchmarkService.findOne(benchmarkIdDto.id);
   }
 
+  @ApiOperation({ summary: 'Get the leaderboard for the benchmark' })
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/leaderboard')
+  async getLeaderboardById(
+    @Param() benchmarkIdDto: BenchmarkIdDto,
+  ): Promise<Submission[]> {
+    return this.submissionsService.getLeaderboardForBenchmark(benchmarkIdDto);
+  }
+
   @ApiOperation({ summary: 'Get last submission for benchmark + language' })
   @UseGuards(JwtAuthGuard)
   @Get(':id/submissions/last')

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypedJSON } from 'typedjson';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { BenchmarkService } from '../benchmarks/benchmark.service';
 import { User } from '../users/user.entity';
 import { FindLastSubmissionByLanguageDTO } from './dto/find-last-submission-by-language.dto';
@@ -15,6 +15,7 @@ import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
 import { Submission } from './submission.entity';
+import { BenchmarkIdDto } from '../benchmarks/dto/benchmarkId.dto';
 
 @Injectable()
 export class SubmissionsService {
@@ -136,6 +137,21 @@ export class SubmissionsService {
       //   );
       // }
     }
+  }
+
+  async getLeaderboardForBenchmark(
+    benchmarkId: BenchmarkIdDto,
+  ): Promise<Submission[]> {
+    const bench = await this.benchmarkService.findOne(benchmarkId.id);
+    return this.submissionsRepository.find({
+      where: [
+        {
+          benchmark: bench,
+          qualityScore: Not(IsNull()),
+        },
+      ],
+      order: { qualityScore: 'DESC' },
+    });
   }
 
   async findLastByLanguage(
