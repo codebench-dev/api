@@ -45,7 +45,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Lint Commit
-        uses: wagoid/commitlint-github-action@v3
+        uses: wagoid/commitlint-github-action@v4.1.1
 
   release:
     name: Publish new release
