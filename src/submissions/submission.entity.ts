@@ -68,6 +68,11 @@ export class Submission extends BaseEntity {
 
   @jsonMember
   @ApiProperty()
+  @Column({ default: 0 })
+  memUsage: number;
+
+  @jsonMember
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 

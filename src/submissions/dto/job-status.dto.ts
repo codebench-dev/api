@@ -22,4 +22,7 @@ export class JobStatusDTO {
 
   @jsonMember
   exec_duration: number;
+
+  @jsonMember
+  mem_usage: number;
 }
