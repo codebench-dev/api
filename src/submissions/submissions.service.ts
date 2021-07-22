@@ -17,6 +17,7 @@ import { JobStatusDTO } from './dto/job-status.dto';
 import { Submission } from './submission.entity';
 import { BenchmarkIdDto } from '../benchmarks/dto/benchmarkId.dto';
 import { HashService } from '../hash/hash.service';
+import { Benchmark } from '../benchmarks/benchmark.entity';
 
 @Injectable()
 export class SubmissionsService {
@@ -36,13 +37,6 @@ export class SubmissionsService {
     qualityScore: number,
   ): Promise<Submission> {
     const submission = new Submission(insertSubmissionDTO);
-    submission.codeHash = await this.hashService.hashCode(
-      insertSubmissionDTO.code,
-    );
-    submission.status = 'waiting';
-    submission.lintScore = lintScore;
-    submission.qualityScore = qualityScore;
-
     const benchmark = await this.benchmarkService.findOne(
       insertSubmissionDTO.benchmarkId,
     );
@@ -50,6 +44,18 @@ export class SubmissionsService {
     if (benchmark) {
       submission.benchmark = benchmark;
     }
+
+    submission.codeHash = await this.hashService.hashCode(
+      insertSubmissionDTO.code,
+    );
+    submission.status = 'waiting';
+    submission.lintScore = lintScore;
+    submission.qualityScore = qualityScore;
+    submission.duplicatedSubmissions = await this.findSameSubmissions(
+      insertSubmissionDTO.code,
+      submission.benchmark,
+      insertSubmissionDTO.language,
+    );
 
     return submission.save();
   }
@@ -186,6 +192,39 @@ export class SubmissionsService {
       ],
       order: { createdAt: 'DESC' },
     });
+  }
+
+  async findSameSubmissions(
+    source: string,
+    benchmark: Benchmark,
+    language: string,
+  ): Promise<Submission[]> {
+    // Get all submissions in bench for the languages
+    const submissions: Submission[] = await this.submissionsRepository.find({
+      where: [
+        {
+          benchmark,
+          language,
+        },
+      ],
+      order: { qualityScore: 'DESC' },
+    });
+
+    const sameSubmissions: Submission[] = [];
+    // for each check with compare function
+
+    submissions.forEach((submission) => {
+      this.hashService
+        .compareSourceToHash(source, submission.codeHash)
+        .then((value) => {
+          if (value) {
+            sameSubmissions.push(submission);
+          }
+        })
+        .catch((reason) => console.log(reason));
+    });
+
+    return sameSubmissions;
   }
 
   async languageMatcher(language: string): Promise<string | undefined> {
