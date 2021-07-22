@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/user.entity';
-import { jsonMember, jsonObject } from 'typedjson';
+import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -108,4 +110,13 @@ export class Submission extends BaseEntity {
   })
   @ApiProperty({ type: () => Benchmark })
   benchmark: Benchmark;
+
+  @ApiProperty()
+  @JoinTable()
+  @jsonArrayMember(() => Submission)
+  @ManyToMany(
+    () => Submission,
+    (submission) => submission.duplicatedSubmissions,
+  )
+  duplicatedSubmissions: Submission[];
 }

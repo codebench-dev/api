@@ -82,6 +82,9 @@ export class SubmissionsController {
     // Since this endpoint is used for polling, the service will fetch from cache first and fallback to DB
     const submission = await this.submissionsService.findOne(findSubmissionDTO);
 
+    // @ts-ignore
+    console.log(submission.duplicatedSubmissions);
+
     if (!submission) {
       throw new NotFoundException();
     }
