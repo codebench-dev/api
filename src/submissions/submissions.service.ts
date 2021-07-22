@@ -16,6 +16,7 @@ import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
 import { Submission } from './submission.entity';
 import { BenchmarkIdDto } from '../benchmarks/dto/benchmarkId.dto';
+import { HashService } from '../hash/hash.service';
 
 @Injectable()
 export class SubmissionsService {
@@ -27,12 +28,17 @@ export class SubmissionsService {
     private benchmarkService: BenchmarkService,
   ) {}
 
+  private hashService = new HashService();
+
   async create(
     insertSubmissionDTO: InsertSubmissionDTO,
     lintScore: number,
     qualityScore: number,
   ): Promise<Submission> {
     const submission = new Submission(insertSubmissionDTO);
+    submission.codeHash = await this.hashService.hashCode(
+      insertSubmissionDTO.code,
+    );
     submission.status = 'waiting';
     submission.lintScore = lintScore;
     submission.qualityScore = qualityScore;
