@@ -18,6 +18,7 @@ import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
 import { Submission } from './submission.entity';
+import { CodeTokenizer } from '../code-quality/tokenizer/CodeTokenizer';
 
 @Injectable()
 export class SubmissionsService {
@@ -30,6 +31,8 @@ export class SubmissionsService {
   ) {}
 
   private hashService = new HashService();
+
+  private codeTokenizer = new CodeTokenizer();
 
   async create(
     insertSubmissionDTO: InsertSubmissionDTO,
@@ -57,6 +60,7 @@ export class SubmissionsService {
       insertSubmissionDTO.language,
     );
     // submission.self = submission;
+    this.codeTokenizer.tokenizeCode(submission.code, submission.language);
 
     return submission.save();
   }
