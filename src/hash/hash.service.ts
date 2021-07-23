@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class HashService {
   public async hashCode(source: string): Promise<string> {
-    return bcrypt.hash(source, 8);
+    return crypto.createHash('sha256').update(source).digest('base64');
   }
 
   public async compareSourceToHash(
     source: string,
     hash: string,
   ): Promise<boolean> {
-    return bcrypt.compare(source, hash);
+    return (await this.hashCode(source)) === hash;
   }
 }
