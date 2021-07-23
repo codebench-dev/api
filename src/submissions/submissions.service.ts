@@ -56,6 +56,7 @@ export class SubmissionsService {
       submission.benchmark,
       insertSubmissionDTO.language,
     );
+    // submission.self = submission;
 
     return submission.save();
   }
@@ -115,7 +116,16 @@ export class SubmissionsService {
     // }
 
     // Fallback to DB
-    return this.submissionsRepository.findOne({ id: queriedSubmission.id });
+    return this.submissionsRepository.findOne({
+      where: [
+        {
+          id: queriedSubmission.id,
+        },
+      ],
+      relations: ['duplicatedSubmissions'],
+      order: { createdAt: 'DESC' },
+    });
+    // return this.submissionsRepository.findOne({ id: queriedSubmission.id });
   }
 
   @RabbitSubscribe({
@@ -190,6 +200,7 @@ export class SubmissionsService {
           language: matchedLanguage,
         },
       ],
+      relations: ['duplicatedSubmissions'],
       order: { createdAt: 'DESC' },
     });
   }
