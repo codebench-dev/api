@@ -60,7 +60,7 @@ export class SubmissionsService {
       insertSubmissionDTO.language,
     );
     // submission.self = submission;
-    this.codeTokenizer.tokenizeCode(submission.code, submission.language);
+    this.codeTokenizer.tokenize(submission.code, submission.language);
 
     return submission.save();
   }
