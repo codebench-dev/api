@@ -176,6 +176,7 @@ export class SubmissionsService {
           qualityScore: Not(IsNull()),
         },
       ],
+      relations: ['duplicatedSubmissions'],
       order: { qualityScore: 'DESC' },
     });
   }
