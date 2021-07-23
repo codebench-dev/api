@@ -7,8 +7,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -110,12 +111,16 @@ export class Submission extends BaseEntity {
   @ApiProperty({ type: () => Benchmark })
   benchmark: Benchmark;
 
-  @ManyToOne(
+  @ManyToMany(
     (type) => Submission,
     (submission) => submission.duplicatedSubmissions,
   )
-  self: Submission;
+  @JoinTable()
+  duplicatesSubmissions: Submission[];
 
-  @OneToMany((type) => Submission, (submission) => submission.self)
+  @ManyToMany(
+    (type) => Submission,
+    (submission) => submission.duplicatesSubmissions,
+  )
   duplicatedSubmissions: Submission[];
 }

@@ -8,16 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypedJSON } from 'typedjson';
 import { IsNull, Not, Repository } from 'typeorm';
+import { Benchmark } from '../benchmarks/benchmark.entity';
 import { BenchmarkService } from '../benchmarks/benchmark.service';
+import { BenchmarkIdDto } from '../benchmarks/dto/benchmarkId.dto';
+import { HashService } from '../hash/hash.service';
 import { User } from '../users/user.entity';
 import { FindLastSubmissionByLanguageDTO } from './dto/find-last-submission-by-language.dto';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
 import { Submission } from './submission.entity';
-import { BenchmarkIdDto } from '../benchmarks/dto/benchmarkId.dto';
-import { HashService } from '../hash/hash.service';
-import { Benchmark } from '../benchmarks/benchmark.entity';
 
 @Injectable()
 export class SubmissionsService {
@@ -125,7 +125,6 @@ export class SubmissionsService {
       relations: ['duplicatedSubmissions'],
       order: { createdAt: 'DESC' },
     });
-    // return this.submissionsRepository.findOne({ id: queriedSubmission.id });
   }
 
   @RabbitSubscribe({
@@ -216,26 +215,13 @@ export class SubmissionsService {
         {
           benchmark,
           language,
+          codeHash: await this.hashService.hashCode(source),
         },
       ],
       order: { qualityScore: 'DESC' },
     });
 
-    const sameSubmissions: Submission[] = [];
-    // for each check with compare function
-
-    submissions.forEach((submission) => {
-      this.hashService
-        .compareSourceToHash(source, submission.codeHash)
-        .then((value) => {
-          if (value) {
-            sameSubmissions.push(submission);
-          }
-        })
-        .catch((reason) => console.log(reason));
-    });
-
-    return sameSubmissions;
+    return submissions;
   }
 
   async languageMatcher(language: string): Promise<string | undefined> {
