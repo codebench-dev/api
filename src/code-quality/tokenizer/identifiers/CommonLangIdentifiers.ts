@@ -31,6 +31,10 @@ export class CommonLangIdentifiers {
     return '{';
   }
 
+  commentIdentifier(): string {
+    return '//';
+  }
+
   isFunction(line: string): boolean {
     return (
       line.startsWith(this.functionIdentifier()) &&

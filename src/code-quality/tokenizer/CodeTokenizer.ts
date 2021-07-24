@@ -90,6 +90,13 @@ export class CodeTokenizer {
           trimmedLine.endsWith(':')
         ) {
           tokenizedCode.push(CodeTokens.CASE);
+
+          // Comment line
+        } else if (
+          trimmedLine.startsWith(languageIdentifier.commentIdentifier())
+        ) {
+          tokenizedCode.push(CodeTokens.COMMENT);
+
           // Other lines
         } else {
           tokenizedCode.push(CodeTokens.LINE);

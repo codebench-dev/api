@@ -12,4 +12,5 @@ export enum CodeTokens {
   AND = 'AND',
   // common line
   LINE = 'LINE',
+  COMMENT = 'COMMENT',
 }
