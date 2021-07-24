@@ -35,9 +35,31 @@ export class CommonLangIdentifiers {
     return '//';
   }
 
+  elseIdentifier(): string {
+    return 'else';
+  }
+
+  elseIfIdentifier(): string {
+    return 'else if';
+  }
+
   isFunction(line: string): boolean {
     return (
       line.startsWith(this.functionIdentifier()) &&
+      line.endsWith(this.endLoopAndCondIdentifier())
+    );
+  }
+
+  isIfBlock(line: string): boolean {
+    return (
+      line.startsWith(this.ifIdentifier()) &&
+      line.endsWith(this.endLoopAndCondIdentifier())
+    );
+  }
+
+  isElseBlock(line: string): boolean {
+    return (
+      line.startsWith(this.elseIdentifier()) &&
       line.endsWith(this.endLoopAndCondIdentifier())
     );
   }

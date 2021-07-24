@@ -62,13 +62,13 @@ export class SubmissionsService {
       submission.benchmark,
       insertSubmissionDTO.language,
     );
-    // submission.self = submission;
     const tokenizedCode = this.codeTokenizer.tokenize(
       submission.code,
       submission.language,
     );
     submission.cyclomaticComplexity =
       this.cyclomaticComplexity.compute(tokenizedCode);
+    // console.log(cycloComp);
 
     return submission.save();
   }

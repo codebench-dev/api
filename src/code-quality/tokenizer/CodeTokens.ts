@@ -7,6 +7,8 @@ export enum CodeTokens {
   WHILE = 'WHILE',
   // conditions
   IF = 'IF',
+  ELSE = 'ELSE',
+  ELSEIF = 'ELSEIF',
   CASE = 'CASE',
   OR = 'OR',
   AND = 'AND',
