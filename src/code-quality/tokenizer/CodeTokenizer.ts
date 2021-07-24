@@ -2,11 +2,14 @@ import { CodeTokens } from './CodeTokens';
 import { PythonIdentifiers } from './identifiers/PythonIdentifiers';
 import { CommonLangIdentifiers } from './identifiers/CommonLangIdentifiers';
 import { GolangIdentifiers } from './identifiers/GolangIdentifiers';
+import { CppIdentifiers } from './identifiers/CppIdentifiers';
 
 export class CodeTokenizer {
   private pyIdentifiers = new PythonIdentifiers();
 
   private golangIdentifiers = new GolangIdentifiers();
+
+  private cppIdentifiers = new CppIdentifiers();
 
   public tokenize(code: string, language: string): CodeTokens[] {
     switch (language) {
@@ -15,7 +18,7 @@ export class CodeTokenizer {
       case 'go':
         return this.tokenizeCode(code, this.golangIdentifiers);
       case 'cpp':
-        return [];
+        return this.tokenizeCode(code, this.cppIdentifiers);
       default:
         return [];
     }
@@ -32,10 +35,7 @@ export class CodeTokenizer {
       const trimmedLine = line.trim();
 
       if (trimmedLine !== '' && trimmedLine !== '}')
-        if (
-          trimmedLine.startsWith(languageIdentifier.functionIdentifier()) &&
-          trimmedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
-        ) {
+        if (languageIdentifier.isFunction(trimmedLine)) {
           // Function detection
           tokenizedCode.push(CodeTokens.FUNC);
           const numberOfParams =
