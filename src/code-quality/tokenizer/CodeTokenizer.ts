@@ -14,6 +14,8 @@ export class CodeTokenizer {
         return this.tokenizeCode(code, this.pyIdentifiers);
       case 'go':
         return this.tokenizeCode(code, this.golangIdentifiers);
+      case 'cpp':
+        return [];
       default:
         return [];
     }
@@ -27,17 +29,17 @@ export class CodeTokenizer {
     let tokenizedCode: CodeTokens[] = [];
 
     lines.forEach((line) => {
-      const trimedLine = line.trim();
+      const trimmedLine = line.trim();
 
-      if (trimedLine !== '' && trimedLine !== '}')
+      if (trimmedLine !== '' && trimmedLine !== '}')
         if (
-          trimedLine.startsWith(languageIdentifier.functionIdentifier()) &&
-          trimedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
+          trimmedLine.startsWith(languageIdentifier.functionIdentifier()) &&
+          trimmedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
         ) {
           // Function detection
           tokenizedCode.push(CodeTokens.FUNC);
           const numberOfParams =
-            CodeTokenizer.numberOfFunctionParameters(trimedLine);
+            CodeTokenizer.numberOfFunctionParameters(trimmedLine);
           tokenizedCode = CodeTokenizer.pushTokensInTab(
             tokenizedCode,
             CodeTokens.FUNCPARAM,
@@ -46,25 +48,25 @@ export class CodeTokenizer {
 
           // For line
         } else if (
-          trimedLine.startsWith(languageIdentifier.forIdentifier()) &&
-          trimedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
+          trimmedLine.startsWith(languageIdentifier.forIdentifier()) &&
+          trimmedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
         ) {
           tokenizedCode.push(CodeTokens.FOR);
           // While line
         } else if (
-          trimedLine.startsWith(languageIdentifier.whileIdentifier()) &&
-          trimedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
+          trimmedLine.startsWith(languageIdentifier.whileIdentifier()) &&
+          trimmedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
         ) {
           tokenizedCode.push(CodeTokens.WHILE);
           // If line
         } else if (
-          trimedLine.startsWith(languageIdentifier.ifIdentifier()) &&
-          trimedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
+          trimmedLine.startsWith(languageIdentifier.ifIdentifier()) &&
+          trimmedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
         ) {
           tokenizedCode.push(CodeTokens.IF);
           const andOccurrences = CodeTokenizer.numberTokenPresentInLine(
             languageIdentifier.andIdentifier(),
-            trimedLine,
+            trimmedLine,
           );
           tokenizedCode = CodeTokenizer.pushTokensInTab(
             tokenizedCode,
@@ -74,7 +76,7 @@ export class CodeTokenizer {
 
           const orOccurrences = CodeTokenizer.numberTokenPresentInLine(
             languageIdentifier.orIdentifier(),
-            trimedLine,
+            trimmedLine,
           );
           tokenizedCode = CodeTokenizer.pushTokensInTab(
             tokenizedCode,
@@ -84,8 +86,8 @@ export class CodeTokenizer {
 
           // Case line
         } else if (
-          trimedLine.startsWith(languageIdentifier.caseIdentifier()) &&
-          trimedLine.endsWith(':')
+          trimmedLine.startsWith(languageIdentifier.caseIdentifier()) &&
+          trimmedLine.endsWith(':')
         ) {
           tokenizedCode.push(CodeTokens.CASE);
           // Other lines
@@ -93,7 +95,7 @@ export class CodeTokenizer {
           tokenizedCode.push(CodeTokens.LINE);
         }
 
-      console.log(trimedLine);
+      console.log(trimmedLine);
     });
 
     console.log(tokenizedCode);
