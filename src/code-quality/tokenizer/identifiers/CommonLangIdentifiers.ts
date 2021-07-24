@@ -30,4 +30,11 @@ export class CommonLangIdentifiers {
   endLoopAndCondIdentifier(): string {
     return '{';
   }
+
+  isFunction(line: string): boolean {
+    return (
+      line.startsWith(this.functionIdentifier()) &&
+      line.endsWith(this.endLoopAndCondIdentifier())
+    );
+  }
 }
