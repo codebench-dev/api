@@ -9,6 +9,10 @@ export class PythonIdentifiers extends CommonLangIdentifiers {
     return '';
   }
 
+  commentIdentifier(): string {
+    return '#';
+  }
+
   endLoopAndCondIdentifier(): string {
     return ':';
   }
