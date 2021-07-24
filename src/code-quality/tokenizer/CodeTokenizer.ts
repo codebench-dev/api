@@ -59,31 +59,36 @@ export class CodeTokenizer {
         ) {
           tokenizedCode.push(CodeTokens.WHILE);
           // If line
-        } else if (
-          trimmedLine.startsWith(languageIdentifier.ifIdentifier()) &&
-          trimmedLine.endsWith(languageIdentifier.endLoopAndCondIdentifier())
-        ) {
+        } else if (languageIdentifier.isIfBlock(trimmedLine)) {
           tokenizedCode.push(CodeTokens.IF);
-          const andOccurrences = CodeTokenizer.numberTokenPresentInLine(
-            languageIdentifier.andIdentifier(),
+          tokenizedCode = CodeTokenizer.getAndOrTokens(
             trimmedLine,
-          );
-          tokenizedCode = CodeTokenizer.pushTokensInTab(
+            languageIdentifier,
             tokenizedCode,
-            CodeTokens.AND,
-            andOccurrences,
           );
 
-          const orOccurrences = CodeTokenizer.numberTokenPresentInLine(
-            languageIdentifier.orIdentifier(),
+          // Else if line
+        } else if (
+          CodeTokenizer.numberTokenPresentInLine(
+            languageIdentifier.elseIfIdentifier(),
             trimmedLine,
-          );
-          tokenizedCode = CodeTokenizer.pushTokensInTab(
+          ) > 0
+        ) {
+          tokenizedCode.push(CodeTokens.ELSEIF);
+          tokenizedCode = CodeTokenizer.getAndOrTokens(
+            trimmedLine,
+            languageIdentifier,
             tokenizedCode,
-            CodeTokens.OR,
-            orOccurrences,
           );
 
+          // Else line
+        } else if (
+          CodeTokenizer.numberTokenPresentInLine(
+            languageIdentifier.elseIdentifier(),
+            trimmedLine,
+          ) > 0
+        ) {
+          tokenizedCode.push(CodeTokens.ELSE);
           // Case line
         } else if (
           trimmedLine.startsWith(languageIdentifier.caseIdentifier()) &&
@@ -102,10 +107,39 @@ export class CodeTokenizer {
           tokenizedCode.push(CodeTokens.LINE);
         }
 
-      console.log(trimmedLine);
+      // console.log(trimmedLine);
     });
 
-    console.log(tokenizedCode);
+    // console.log(tokenizedCode);
+
+    return tokenizedCode;
+  }
+
+  private static getAndOrTokens(
+    line: string,
+    languageIdentifier: CommonLangIdentifiers,
+    tokens: CodeTokens[],
+  ): CodeTokens[] {
+    let tokenizedCode = tokens;
+    const andOccurrences = CodeTokenizer.numberTokenPresentInLine(
+      languageIdentifier.andIdentifier(),
+      line,
+    );
+    tokenizedCode = CodeTokenizer.pushTokensInTab(
+      tokenizedCode,
+      CodeTokens.AND,
+      andOccurrences,
+    );
+
+    const orOccurrences = CodeTokenizer.numberTokenPresentInLine(
+      languageIdentifier.orIdentifier(),
+      line,
+    );
+    tokenizedCode = CodeTokenizer.pushTokensInTab(
+      tokenizedCode,
+      CodeTokens.OR,
+      orOccurrences,
+    );
 
     return tokenizedCode;
   }

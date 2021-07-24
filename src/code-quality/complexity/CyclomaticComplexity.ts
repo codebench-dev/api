@@ -15,6 +15,7 @@ export class CyclomaticComplexity {
     let cyclomaticComplexity = -1;
 
     tokenizedCode.forEach((token) => {
+      // console.log(`token: ${token}`);
       switch (token) {
         case CodeTokens.FOR:
           cyclomaticComplexity += 1;
@@ -23,6 +24,12 @@ export class CyclomaticComplexity {
           cyclomaticComplexity += 1;
           break;
         case CodeTokens.IF:
+          cyclomaticComplexity += 1;
+          break;
+        case CodeTokens.ELSEIF:
+          cyclomaticComplexity += 1;
+          break;
+        case CodeTokens.ELSE:
           cyclomaticComplexity += 1;
           break;
         case CodeTokens.CASE:
@@ -37,6 +44,7 @@ export class CyclomaticComplexity {
         default:
           break;
       }
+      // console.log(`cyclo: ${cyclomaticComplexity}`);
     });
 
     return cyclomaticComplexity;

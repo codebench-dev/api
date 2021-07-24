@@ -16,4 +16,12 @@ export class PythonIdentifiers extends CommonLangIdentifiers {
   endLoopAndCondIdentifier(): string {
     return ':';
   }
+
+  elseIdentifier(): string {
+    return 'else';
+  }
+
+  elseIfIdentifier(): string {
+    return 'elif';
+  }
 }
