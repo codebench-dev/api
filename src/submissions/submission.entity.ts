@@ -96,6 +96,10 @@ export class Submission extends BaseEntity {
   @Column({ nullable: true })
   qualityScore: number;
 
+  @jsonMember
+  @Column({ default: 0 })
+  cyclomaticComplexity: number;
+
   @ManyToOne(() => User, (user) => user.submissions, {
     nullable: false,
     eager: true,

@@ -19,6 +19,7 @@ import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
 import { Submission } from './submission.entity';
 import { CodeTokenizer } from '../code-quality/tokenizer/CodeTokenizer';
+import { CyclomaticComplexity } from '../code-quality/complexity/CyclomaticComplexity';
 
 @Injectable()
 export class SubmissionsService {
@@ -33,6 +34,8 @@ export class SubmissionsService {
   private hashService = new HashService();
 
   private codeTokenizer = new CodeTokenizer();
+
+  private cyclomaticComplexity = new CyclomaticComplexity();
 
   async create(
     insertSubmissionDTO: InsertSubmissionDTO,
@@ -60,7 +63,12 @@ export class SubmissionsService {
       insertSubmissionDTO.language,
     );
     // submission.self = submission;
-    this.codeTokenizer.tokenize(submission.code, submission.language);
+    const tokenizedCode = this.codeTokenizer.tokenize(
+      submission.code,
+      submission.language,
+    );
+    submission.cyclomaticComplexity =
+      this.cyclomaticComplexity.compute(tokenizedCode);
 
     return submission.save();
   }
