@@ -6,9 +6,8 @@ RUN npm install
 COPY . .
 RUN npm run build
 
+RUN pip3 install pylint
 
-FROM node:14-alpine
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.41.1 && cp ~/bin/golangci-lint /usr/local/bin/golangci-lint
 
-WORKDIR /app
-COPY --from=builder /app ./
 CMD ["npm", "run", "start:prod"]
