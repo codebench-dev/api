@@ -1,26 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import child_process from 'child_process';
-import * as t from 'io-ts';
-
-const PylintOutputMessage = t.type({
-  type: t.string,
-  module: t.string,
-  obj: t.string,
-  line: t.number,
-  column: t.number,
-  path: t.string,
-  symbol: t.string,
-  message: t.string,
-  'message-id': t.string,
-});
-
-const PylintOutput = t.array(PylintOutputMessage);
-
-export type PylintOutputT = t.TypeOf<typeof PylintOutput>;
+import fs from 'fs';
+import * as uuid from 'uuid';
+import { ConvertToGolangCILintOutput } from './linters/golangcilint';
+import { ConvertToPylintOutput } from './linters/pylint';
 
 @Injectable()
 export class LintService {
-  lintPython3(code: string): t.Validation<PylintOutputT> {
+  lintPython3(code: string): number {
     const result = child_process.spawnSync(
       'pylint',
       ['--from-stdin', '-f', 'json', 'module_or_package', '--'],
@@ -33,14 +20,58 @@ export class LintService {
       throw new InternalServerErrorException();
     }
 
-    const out = result.output.toString();
     try {
-      const output = PylintOutput.decode(out);
-      if (output) {
-        return output;
+      let output = result.output.toString();
+      output = output.substring(1);
+      output = output.substring(0, output.length - 1);
+      const pylintOutput = ConvertToPylintOutput.toPylintOutput(output);
+      if (pylintOutput) {
+        // Remove one point to the score per violation
+        return 100 - pylintOutput.length;
       }
     } catch (e) {
       throw new InternalServerErrorException();
+    }
+
+    throw new InternalServerErrorException();
+  }
+
+  lintGolang(code: string): number {
+    // Golangci-lint doesn't support stdin
+    const path = `/tmp/codebench_${uuid.v4()}.go`;
+    try {
+      fs.writeFileSync(path, code);
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+
+    const result = child_process.spawnSync('golangci-lint', [
+      'run',
+      path,
+      '--out-format',
+      'json',
+    ]);
+
+    if (result.error) {
+      throw new InternalServerErrorException(result.error);
+    }
+
+    try {
+      let output = result.output.toString();
+      output = output.substring(1);
+      output = output.substring(0, output.length - 1);
+      const lintOuput =
+        ConvertToGolangCILintOutput.toGolangCILintOutput(output);
+      if (lintOuput) {
+        if (lintOuput.issues) {
+          // Remove one point to the score per violation
+          return 100 - lintOuput.issues.length;
+        }
+        // Golangci-lint return `null` if there are no violation
+        return 100;
+      }
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
 
     throw new InternalServerErrorException();
