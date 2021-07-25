@@ -7,6 +7,12 @@ The CodeBench main API.
 - NodeJS v16+
 - PostgreSQL (cf `docker-compose.yml`)
 
+### Linters
+
+- [`pylint`](https://www.pylint.org/)
+- [`golangci-lint`](https://github.com/golangci/golangci-lint)
+- [`clang-tidy`](https://clang.llvm.org/extra/clang-tidy/)
+
 ## Run API
 
 Dev with hot-reloading:
