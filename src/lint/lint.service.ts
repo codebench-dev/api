@@ -7,12 +7,14 @@ import child_process from 'child_process';
 import fs from 'fs';
 import * as uuid from 'uuid';
 import YAML from 'yaml';
+import { LintErrorDTO } from './dto/lint-error.dto';
+import { LintResultDTO } from './dto/lint-result.dto';
 import { ConvertToGolangCILintOutput } from './linters/golangcilint';
 import { ConvertToPylintOutput } from './linters/pylint';
 
 @Injectable()
 export class LintService {
-  lintPython3(code: string): number {
+  lintPython3(code: string): LintResultDTO {
     const result = child_process.spawnSync(
       'pylint',
       ['--from-stdin', '-f', 'json', 'module_or_package', '--'],
@@ -49,7 +51,22 @@ export class LintService {
 
         Remove one point to the score per violation
         */
-        return 100 - pylintOutput.length;
+        const score = 100 - pylintOutput.length;
+        const errors: LintErrorDTO[] = [];
+
+        for (const violation of pylintOutput) {
+          errors.push({
+            message: violation.message,
+            line: violation.line,
+            column: violation.column,
+            offset: null,
+          });
+        }
+
+        return {
+          score,
+          errors,
+        };
       }
     } catch (e) {
       throw new InternalServerErrorException();
@@ -58,7 +75,7 @@ export class LintService {
     throw new InternalServerErrorException();
   }
 
-  lintGolang(code: string): number {
+  lintGolang(code: string): LintResultDTO {
     // Golangci-lint doesn't support stdin
     const path = `/tmp/codebench_${uuid.v4()}.go`;
     try {
@@ -112,19 +129,35 @@ export class LintService {
         */
         if (lintOuput.issues) {
           // Remove one point to the score per violation
-          return 100 - lintOuput.issues.length;
+          const score = 100 - lintOuput.issues.length;
+          const errors: LintErrorDTO[] = [];
+
+          for (const issue of lintOuput.issues) {
+            errors.push({
+              message: issue.text,
+              line: issue.pos.line,
+              column: issue.pos.column,
+              offset: null,
+            });
+          }
+          return {
+            score,
+            errors,
+          };
         }
         // Golangci-lint return `null` if there are no violation
-        return 100;
       }
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
 
-    throw new InternalServerErrorException();
+    return {
+      score: 100,
+      errors: [],
+    };
   }
 
-  lintCpp(code: string): number {
+  lintCpp(code: string): LintResultDTO {
     // clang-tidy doesn't support stdin
     const path = `/tmp/codebench_${uuid.v4()}.cpp`;
     const outputPath = `${path}.yaml`;
@@ -152,27 +185,46 @@ export class LintService {
       if (fs.existsSync(outputPath)) {
         const file = fs.readFileSync(`${path}.yaml`, 'utf8');
         const fixes: any = YAML.parse(file);
+
         if (fixes) {
           /*
           Example file:
           ---
           MainSourceFile:  /root/fib.cpp
           Diagnostics:
-            - DiagnosticName:  clang-diagnostic-unused-variable
-              Message:         'unused variable ''d'''
-              FileOffset:      142
-              FilePath:        /root/fib.cpp
-              Replacements:
+          - DiagnosticName:  clang-diagnostic-unused-variable
+          Message:         'unused variable ''d'''
+          FileOffset:      142
+          FilePath:        /root/fib.cpp
+          Replacements:
           ...
           */
           if (fixes.Diagnostics) {
-            return 100 - fixes.Diagnostics.length;
+            const score = 100 - fixes.Diagnostics.length;
+            const errors: LintErrorDTO[] = [];
+
+            for (const diagnostic of fixes.Diagnostics) {
+              errors.push({
+                message: diagnostic.Message,
+                line: diagnostic.FileOffset,
+                column: null,
+                offset: null,
+              });
+            }
+            return {
+              score,
+              errors,
+            };
           }
         }
       }
-      return 100;
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
+
+    return {
+      score: 100,
+      errors: [],
+    };
   }
 }
