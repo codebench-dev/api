@@ -12,6 +12,7 @@ import {
 import { ValidatedJWTReq } from 'src/auth/dto/validated-jwt-req';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CodeQualityService } from 'src/code-quality/code-quality.service';
+import { LintResultDTO } from 'src/lint/dto/lint-result.dto';
 import { LintService } from 'src/lint/lint.service';
 import { CreateSubmissionDTO } from './dto/create-submission-dto';
 import { FindSubmissionDTO } from './dto/find-submission.dto';
@@ -34,25 +35,23 @@ export class SubmissionsController {
     @Request() req: ValidatedJWTReq,
     @Body() createSubmissionDTO: CreateSubmissionDTO,
   ): Promise<SubmissionResultDTO> {
-    let lintScore = { score: 100 };
+    let lintScore: LintResultDTO;
     let qualityScore = { score: 100 };
     switch (createSubmissionDTO.language) {
       case 'python':
         qualityScore = this.qualityService.run(createSubmissionDTO.code, 'py');
-        lintScore.score = this.lintService.lintPython3(
-          createSubmissionDTO.code,
-        );
+        lintScore = this.lintService.lintPython3(createSubmissionDTO.code);
         break;
       case 'cpp':
         qualityScore = this.qualityService.run(createSubmissionDTO.code, 'cpp');
-        lintScore.score = this.lintService.lintCpp(createSubmissionDTO.code);
+        lintScore = this.lintService.lintCpp(createSubmissionDTO.code);
         break;
       case 'go':
         qualityScore = this.qualityService.run(createSubmissionDTO.code, 'go');
-        lintScore.score = this.lintService.lintGolang(createSubmissionDTO.code);
+        lintScore = this.lintService.lintGolang(createSubmissionDTO.code);
         break;
       default:
-        lintScore = { score: 0 };
+        lintScore = { score: 0, errors: [] };
         qualityScore = { score: 0 };
     }
 
@@ -60,6 +59,7 @@ export class SubmissionsController {
       {
         ...createSubmissionDTO,
         user: req.user,
+        lintErrors: lintScore.errors,
       },
       lintScore.score,
       qualityScore.score,

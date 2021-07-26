@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiProperty } from '@nestjs/swagger';
+import { LintErrorDTO } from 'src/lint/dto/lint-error.dto';
 import { User } from 'src/users/user.entity';
 import { jsonMember, jsonObject } from 'typedjson';
 import {
@@ -91,6 +92,9 @@ export class Submission extends BaseEntity {
   @jsonMember
   @Column({ nullable: true })
   lintScore: number;
+
+  @Column('jsonb', { nullable: true })
+  lintErrors?: LintErrorDTO[];
 
   @jsonMember
   @Column({ nullable: true })
