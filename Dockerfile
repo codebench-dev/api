@@ -7,6 +7,14 @@ RUN apt-get update \
 
 RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.41.1 && cp ./bin/golangci-lint /usr/local/bin/golangci-lint
 
+RUN wget https://dl.google.com/go/go1.16.4.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go1.16.4.linux-amd64.tar.gz \
+    && rm go1.16.4.linux-amd64.tar.gz
+
+ENV GOROOT="/usr/local/go"
+ENV GOPATH="/go"
+ENV PATH="PATH=/go/bin:/usr/local/go/bin:$PATH"
+
 WORKDIR /app
 COPY ./package.json ./
 RUN npm install
