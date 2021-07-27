@@ -5,6 +5,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import child_process from 'child_process';
 import fs from 'fs';
+import { Logger } from 'nestjs-pino';
 import * as uuid from 'uuid';
 import YAML from 'yaml';
 import { LintErrorDTO } from './dto/lint-error.dto';
@@ -14,6 +15,8 @@ import { ConvertToPylintOutput } from './linters/pylint';
 
 @Injectable()
 export class LintService {
+  constructor(private readonly logger: Logger) {}
+
   lintPython3(code: string): LintResultDTO {
     const result = child_process.spawnSync(
       'pylint',
@@ -24,13 +27,14 @@ export class LintService {
     );
 
     if (result.error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Failed to run pylint');
     }
 
     try {
       let output = result.output.toString();
       output = output.substring(1);
       output = output.substring(0, output.length - 1);
+      this.logger.log(output);
       const pylintOutput = ConvertToPylintOutput.toPylintOutput(output);
       if (pylintOutput) {
         /*
@@ -69,7 +73,7 @@ export class LintService {
         };
       }
     } catch (e) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
 
     throw new InternalServerErrorException();
@@ -99,6 +103,7 @@ export class LintService {
       let output = result.output.toString();
       output = output.substring(1);
       output = output.substring(0, output.length - 1);
+      this.logger.log(output);
       const lintOuput =
         ConvertToGolangCILintOutput.toGolangCILintOutput(output);
       if (lintOuput) {
@@ -185,6 +190,7 @@ export class LintService {
       if (fs.existsSync(outputPath)) {
         const file = fs.readFileSync(`${path}.yaml`, 'utf8');
         const fixes: any = YAML.parse(file);
+        this.logger.log(fixes);
 
         if (fixes) {
           /*

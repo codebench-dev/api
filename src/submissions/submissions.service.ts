@@ -11,6 +11,8 @@ import { IsNull, Not, Repository } from 'typeorm';
 import { Benchmark } from '../benchmarks/benchmark.entity';
 import { BenchmarkService } from '../benchmarks/benchmark.service';
 import { BenchmarkIdDto } from '../benchmarks/dto/benchmarkId.dto';
+import { CyclomaticComplexity } from '../code-quality/complexity/CyclomaticComplexity';
+import { CodeTokenizer } from '../code-quality/tokenizer/CodeTokenizer';
 import { HashService } from '../hash/hash.service';
 import { User } from '../users/user.entity';
 import { FindLastSubmissionByLanguageDTO } from './dto/find-last-submission-by-language.dto';
@@ -18,8 +20,6 @@ import { FindSubmissionDTO } from './dto/find-submission.dto';
 import { InsertSubmissionDTO } from './dto/insert-submission-dto';
 import { JobStatusDTO } from './dto/job-status.dto';
 import { Submission } from './submission.entity';
-import { CodeTokenizer } from '../code-quality/tokenizer/CodeTokenizer';
-import { CyclomaticComplexity } from '../code-quality/complexity/CyclomaticComplexity';
 
 @Injectable()
 export class SubmissionsService {
