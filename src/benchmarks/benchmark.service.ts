@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
-import { CreateBenchmarkDto } from './dto/create-benchmark.dto';
-import { Benchmark } from './benchmark.entity';
+import { FindManyOptions, Repository } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Benchmark } from './benchmark.entity';
+import { CreateBenchmarkDto } from './dto/create-benchmark.dto';
 
 @Injectable()
 export class BenchmarkService {
@@ -24,6 +24,10 @@ export class BenchmarkService {
 
   async getAll(): Promise<Benchmark[]> {
     return this.benchmarkRepository.find({});
+  }
+
+  async findBy(params: FindManyOptions<Benchmark>): Promise<Benchmark[]> {
+    return this.benchmarkRepository.find(params);
   }
 
   async findOne(id: string): Promise<Benchmark | undefined> {
