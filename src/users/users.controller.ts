@@ -15,6 +15,8 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Benchmark } from 'src/benchmarks/benchmark.entity';
+import { BenchmarkService } from 'src/benchmarks/benchmark.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { FindUserDTO } from './dto/find-user.dto';
 import { User } from './user.entity';
@@ -22,7 +24,10 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly benchmarkService: BenchmarkService,
+  ) {}
 
   @Post()
   async signupUser(
@@ -58,5 +63,19 @@ export class UsersController {
     }
 
     return user;
+  }
+
+  @ApiOperation({ summary: 'Get benchmarks for user' })
+  @ApiOkResponse({ type: [Benchmark], description: 'Array of benchmarks' })
+  @Get(':username/benchmarks')
+  async getBenchmarkForUser(
+    @Param() userReq: { username: string },
+  ): Promise<Benchmark[]> {
+    const user = await this.usersService.findOne(userReq);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.benchmarkService.findBy({ where: { creator: user } });
   }
 }
