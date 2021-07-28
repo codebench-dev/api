@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/users/user.entity';
 import {
   BaseEntity,
   Column,
@@ -8,8 +10,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/users/user.entity';
 import { Submission } from '../submissions/submission.entity';
 
 @Entity('benchmarks')
@@ -49,4 +49,8 @@ export class Benchmark extends BaseEntity {
   @ManyToOne((type) => User, (user) => user.benchmarks, { eager: true })
   @ApiProperty({ type: () => User })
   creator: User;
+
+  @ApiProperty()
+  @Column({ default: 10 })
+  maxCyclomaticComplexity: number;
 }
