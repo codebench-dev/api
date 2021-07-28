@@ -1,11 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
-  IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
-  Max,
-  Min,
 } from 'class-validator';
 
 export class CreateBenchmarkDto {
@@ -31,8 +29,10 @@ export class CreateBenchmarkDto {
   difficulty: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  @Max(100)
+  @IsNumberString()
+  // @Transform(parseInt)
+  // @IsInt()
+  // @Min(1)
+  // @Max(100)
   maxCyclomaticComplexity: number;
 }
