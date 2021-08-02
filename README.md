@@ -45,6 +45,7 @@ npm start
 | `Agent`   | Compile/Run code, return result                                                                                                         |
 | `Worker`  | During two previous steps, send status of jobs on `jobs_status_ex` exchange with `jobs_status_rk` routing key                           |
 | `API`     | Receive each new status on `jobs_status_q`, and insert them into DB and in-memory cache, so that the polling can get the latest status. |
+| `Front`   | Get the final result, stop polling and display it.                                                                                      |
 
 ## Contribute
 
